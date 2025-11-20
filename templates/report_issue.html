@@ -1,0 +1,265 @@
+{% extends 'base.html' %}
+{% block title %}Report an Issue{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8 col-lg-6">
+        <div class="card glass-card p-4">
+            <h2 class="text-center mb-4">Report a New Issue</h2>
+            
+            <div id="loading" class="text-center">
+                <div class="spinner-border text-warning" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+                <p>Getting your location and starting camera...</p>
+            </div>
+
+            <div id="report-form" style="display: none;">
+                <div class="mb-3 position-relative" style="min-height: 250px;">
+                    <video id="camera-feed" width="100%" autoplay playsinline muted style="border-radius: 10px;"></video>
+                    <img id="image-preview" src="#" alt="Captured Image" class="img-fluid" style="display:none; border-radius: 10px;">
+                </div>
+                <div class="d-grid gap-2 d-md-flex justify-content-md-center mb-3">
+                    <button id="capture-btn" class="btn btn-outline-light" style="color: black;">Capture Image</button>
+                    <button id="recapture-btn" class="btn btn-outline-warning" style="display:none;">Recapture</button>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Record a Voice Note (Optional)</label>
+                    <div class="d-flex align-items-center">
+                        <button id="record-btn" class="btn btn-sm btn-success">Start Recording</button>
+                        <button id="stop-btn" class="btn btn-sm btn-danger ms-2" disabled>Stop Recording</button>
+                    </div>
+                    <canvas id="voice-visualizer" width="100%" height="50" class="mt-2" style="display: none; border-radius: 5px; background-color: rgba(0,0,0,0.2);"></canvas>
+                    <audio id="audio-playback" controls class="mt-2" style="display: none; width: 100%;"></audio>
+                </div>
+
+                <div class="mb-3">
+                    <label for="description" class="form-label">Description (Optional)</label>
+                    <textarea class="form-control" id="description" rows="3"></textarea>
+                </div>
+
+                <div class="d-grid">
+                    <button id="submit-issue-btn" class="btn btn-primary btn-lg">Submit Issue</button>
+                </div>
+            </div>
+            
+            <div id="submission-status" class="text-center mt-3" style="display:none;"></div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts_extra %}
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        // --- Element References ---
+        const loadingDiv = document.getElementById('loading');
+        const reportForm = document.getElementById('report-form');
+        const video = document.getElementById('camera-feed');
+        const imagePreview = document.getElementById('image-preview');
+        const canvas = document.createElement('canvas'); // Off-screen canvas
+        const captureBtn = document.getElementById('capture-btn');
+        const recaptureBtn = document.getElementById('recapture-btn');
+        const submitBtn = document.getElementById('submit-issue-btn');
+        const descriptionInput = document.getElementById('description');
+        const statusDiv = document.getElementById('submission-status');
+        
+        // --- Voice Recording Elements ---
+        const recordBtn = document.getElementById('record-btn');
+        const stopBtn = document.getElementById('stop-btn');
+        const audioPlayback = document.getElementById('audio-playback');
+        const visualizerCanvas = document.getElementById('voice-visualizer');
+        const visualizerCtx = visualizerCanvas.getContext('2d');
+
+        // --- State Variables ---
+        let capturedImageDataURL = null;
+        let recordedAudioBlob = null;
+        let mediaRecorder;
+        let audioChunks = [];
+        let userLocation = {};
+        let audioContext, analyser, source, animationFrameId;
+
+        // --- Core Functions ---
+        async function setupCameraAndLocation() {
+            loadingDiv.style.display = 'block';
+            try {
+                // Get Location
+                const position = await new Promise((resolve, reject) => {
+                    navigator.geolocation.getCurrentPosition(resolve, reject, {
+                        enableHighAccuracy: true,
+                        timeout: 10000,
+                        maximumAge: 0
+                    });
+                });
+                userLocation = {
+                    latitude: position.coords.latitude,
+                    longitude: position.coords.longitude
+                };
+
+                // Get Camera & Microphone
+                const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' }, audio: true });
+                video.srcObject = stream;
+                
+                // Setup MediaRecorder for audio
+                mediaRecorder = new MediaRecorder(stream);
+                mediaRecorder.ondataavailable = e => audioChunks.push(e.data);
+                mediaRecorder.onstop = () => {
+                    recordedAudioBlob = new Blob(audioChunks, { 'type' : 'audio/webm; codecs=opus' });
+                    audioChunks = [];
+                    const audioURL = window.URL.createObjectURL(recordedAudioBlob);
+                    audioPlayback.src = audioURL;
+                    audioPlayback.style.display = 'block';
+                    stopVisualizer();
+                };
+
+                // Setup AudioContext for visualizer
+                audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                analyser = audioContext.createAnalyser();
+                source = audioContext.createMediaStreamSource(stream);
+                source.connect(analyser);
+
+                reportForm.style.display = 'block';
+            } catch (err) {
+                console.error("Error accessing media devices or location.", err);
+                statusDiv.innerHTML = `<p class="text-danger">Error: Could not access camera or location. Please grant permissions and refresh.</p>`;
+                statusDiv.style.display = 'block';
+            } finally {
+                loadingDiv.style.display = 'none';
+            }
+        }
+
+        // --- Voice Visualizer Functions ---
+        function startVisualizer() {
+            visualizerCanvas.style.display = 'block';
+            analyser.fftSize = 256;
+            const bufferLength = analyser.frequencyBinCount;
+            const dataArray = new Uint8Array(bufferLength);
+
+            visualizerCtx.clearRect(0, 0, visualizerCanvas.width, visualizerCanvas.height);
+
+            function draw() {
+                animationFrameId = requestAnimationFrame(draw);
+                analyser.getByteFrequencyData(dataArray);
+
+                visualizerCtx.fillStyle = 'rgba(0, 0, 0, 0.2)';
+                visualizerCtx.fillRect(0, 0, visualizerCanvas.width, visualizerCanvas.height);
+
+                const barWidth = (visualizerCanvas.width / bufferLength) * 2.5;
+                let barHeight;
+                let x = 0;
+
+                for (let i = 0; i < bufferLength; i++) {
+                    barHeight = dataArray[i] / 2;
+                    visualizerCtx.fillStyle = `rgb(253, 187, 45)`;
+                    visualizerCtx.fillRect(x, visualizerCanvas.height - barHeight, barWidth, barHeight);
+                    x += barWidth + 1;
+                }
+            }
+            draw();
+        }
+        
+        function stopVisualizer() {
+            cancelAnimationFrame(animationFrameId);
+            visualizerCtx.clearRect(0, 0, visualizerCanvas.width, visualizerCanvas.height);
+            visualizerCanvas.style.display = 'none';
+        }
+
+
+        // --- Event Listeners ---
+        captureBtn.addEventListener('click', () => {
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            canvas.getContext('2d').drawImage(video, 0, 0, canvas.width, canvas.height);
+            capturedImageDataURL = canvas.toDataURL('image/png');
+            
+            // Show preview and hide video
+            imagePreview.src = capturedImageDataURL;
+            imagePreview.style.display = 'block';
+            video.style.display = 'none';
+
+            // Toggle buttons
+            captureBtn.style.display = 'none';
+            recaptureBtn.style.display = 'block';
+        });
+        
+        recaptureBtn.addEventListener('click', () => {
+            capturedImageDataURL = null;
+            
+            // Show video and hide preview
+            video.style.display = 'block';
+            imagePreview.style.display = 'none';
+
+            // Toggle buttons
+            recaptureBtn.style.display = 'none';
+            captureBtn.style.display = 'block';
+        });
+
+        recordBtn.addEventListener('click', () => {
+            mediaRecorder.start();
+            startVisualizer();
+            recordBtn.disabled = true;
+            stopBtn.disabled = false;
+        });
+
+        stopBtn.addEventListener('click', () => {
+            mediaRecorder.stop();
+            recordBtn.disabled = false;
+            stopBtn.disabled = true;
+        });
+
+        submitBtn.addEventListener('click', async () => {
+            if (!capturedImageDataURL) {
+                alert('Please capture an image first.');
+                return;
+            }
+
+            statusDiv.innerHTML = `<div class="spinner-border text-primary" role="status"></div> <p>Submitting... Please wait.</p>`;
+            statusDiv.style.display = 'block';
+            submitBtn.disabled = true;
+
+            const payload = {
+                ...userLocation,
+                image_data_url: capturedImageDataURL,
+                description: descriptionInput.value
+            };
+
+            if (recordedAudioBlob) {
+                payload.voice_data_url = await new Promise(resolve => {
+                    const reader = new FileReader();
+                    reader.onloadend = () => resolve(reader.result);
+                    reader.readAsDataURL(recordedAudioBlob);
+                });
+            }
+
+            try {
+                const response = await fetch('/submit_issue', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify(payload)
+                });
+                const result = await response.json();
+
+                if (response.ok) {
+                    if (result.duplicate) {
+                        statusDiv.innerHTML = `<p class="text-warning">This issue seems to be a duplicate. Redirecting you...</p>`;
+                        window.location.href = `/issue/${result.issue_id}`;
+                    } else {
+                        statusDiv.innerHTML = `<p class="text-success">${result.message}</p>`;
+                        setTimeout(() => window.location.href = '/dashboard', 2000);
+                    }
+                } else {
+                    throw new Error(result.error || 'Submission failed');
+                }
+            } catch (error) {
+                console.error('Submission error:', error);
+                statusDiv.innerHTML = `<p class="text-danger">Error: ${error.message}</p>`;
+                submitBtn.disabled = false;
+            }
+        });
+
+        // --- Initialisation ---
+        setupCameraAndLocation();
+    });
+</script>
+{% endblock %}

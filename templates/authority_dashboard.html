@@ -1,0 +1,103 @@
+{% block body_attributes %}data-background-type="default"{% endblock %}
+{% extends 'base.html' %}
+{% block title %}Authority Dashboard{% endblock %}
+{% block content %}
+<nav class="navbar navbar-expand-lg glass-card mb-4">
+  <div class="container-fluid">
+    <a class="navbar-brand text-white" href="#">Authority Dashboard - {{ city }}</a>
+    <div class="ms-auto">
+      <a href="{{ url_for('authority_logout') }}" class="btn btn-outline-light">Logout</a>
+    </div>
+  </div>
+</nav>
+
+<div class="card glass-card p-3 mb-4">
+    <form method="get" action="{{ url_for('authority_dashboard') }}">
+        <div class="row g-3 align-items-end">
+            <div class="col-md-5">
+                <label for="status_filter" class="form-label">Filter by Status</label>
+                <select name="status_filter" id="status_filter" class="form-select" style="background-color: rgba(255,255,255,0.2); color: white;">
+                    <option value="all" {% if current_filter == 'all' %}selected{% endif %} style="color: black;">All Statuses</option>
+                    <option value="Pending" {% if current_filter == 'Pending' %}selected{% endif %} style="color: black;">Pending</option>
+                    <option value="Inspection" {% if current_filter == 'Inspection' %}selected{% endif %} style="color: black;">Inspection</option>
+                    <option value="Work Allotted" {% if current_filter == 'Work Allotted' %}selected{% endif %} style="color: black;">Work Allotted</option>
+                    <option value="Work Underprocess" {% if current_filter == 'Work Underprocess' %}selected{% endif %} style="color: black;">Work Underprocess</option>
+                    <option value="Completed" {% if current_filter == 'Completed' %}selected{% endif %} style="color: black;">Completed</option>
+                </select>
+            </div>
+            <div class="col-md-5">
+                <label for="sort_by" class="form-label">Sort By</label>
+                <select name="sort_by" id="sort_by" class="form-select" style="background-color: rgba(255,255,255,0.2); color: white;">
+                    <option value="newest" {% if current_sort == 'newest' %}selected{% endif %} style="color: black;">Newest to Oldest</option>
+                    <option value="oldest" {% if current_sort == 'oldest' %}selected{% endif %} style="color: black;">Oldest to Newest</option>
+                    <option value="upvotes" {% if current_sort == 'upvotes' %}selected{% endif %} style="color: black;">Most Upvoted</option>
+                </select>
+            </div>
+            <div class="col-md-2 d-grid">
+                <button type="submit" class="btn btn-primary">Apply</button>
+            </div>
+        </div>
+    </form>
+</div>
+
+
+<div class="table-responsive">
+    <table class="table table-dark table-hover" style="background: rgba(0,0,0,0.3); border-radius: 10px;">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Category</th>
+                <th>Image</th>
+                <th>Voice Note</th>
+                <th>Location</th>
+                <th>Upvotes</th>
+                <th>Reported On</th>
+                <th>Status</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for issue in issues %}
+            <tr>
+                <td>{{ issue['id'] }}</td>
+                <td>{{ issue['category'] }}</td>
+                <td>
+                    <a href="{{ url_for('static', filename=issue.image_path.split('static/')[1]) }}" target="_blank">View Image</a>
+                </td>
+                <td>
+                    {% if issue['voice_note_path'] %}
+                        <audio controls style="max-width: 200px;">
+                            <source src="{{ url_for('static', filename=issue.voice_note_path.split('static/')[1]) }}" type="audio/webm">
+                            Your browser does not support the audio element.
+                        </audio>
+                    {% else %}
+                        N/A
+                    {% endif %}
+                </td>
+                <td>
+                    <a href="https://www.google.com/maps?q={{ issue.latitude }},{{ issue.longitude }}" target="_blank" class="text-warning">View on Map</a>
+                </td>
+                <td>{{ issue['upvotes'] }}</td>
+                <td>{{ issue['created_at'].strftime('%Y-%m-%d') }}</td>
+                <td><span class="badge bg-info">{{ issue['status'] }}</span></td>
+                <td>
+                    <form action="{{ url_for('update_status', issue_id=issue.id) }}" method="post" class="d-flex">
+                        <select name="status" class="form-select form-select-sm me-2" style="background-color: rgba(255,255,255,0.2); color: white;">
+                            <option value="Inspection" {% if issue.status == 'Inspection' %}selected{% endif %}>Inspection</option>
+                            <option value="Work Allotted" {% if issue.status == 'Work Allotted' %}selected{% endif %}>Work Allotted</option>
+                            <option value="Work Underprocess" {% if issue.status == 'Work Underprocess' %}selected{% endif %}>Work Underprocess</option>
+                            <option value="Completed" {% if issue.status == 'Completed' %}selected{% endif %}>Completed</option>
+                        </select>
+                        <button type="submit" class="btn btn-sm btn-primary">Update</button>
+                    </form>
+                </td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="9" class="text-center">No issues found for the selected filters.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

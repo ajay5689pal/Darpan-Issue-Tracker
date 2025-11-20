@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+{% block title %}Darpan - A Clearer View of Your Community{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row min-vh-50 align-items-center text-center text-md-start py-5">
+        <div class="col-md-6">
+            <h1 class="display-4 fw-bold">A Clearer View of Your Community.</h1>
+            <p class="lead my-4 text-secondary">
+                Darpan is the official platform for citizens of Greater Noida to report civic issues like potholes and garbage, ensuring swift action and transparent tracking.
+            </p>
+            <a href="{{ url_for('report_issue_page') }}" class="btn btn-primary btn-lg">Report an Issue Now</a>
+            <a href="{{ url_for('user_dashboard') }}" class="btn btn-outline-secondary btn-lg ms-2">View Dashboard</a>
+        </div>
+        <div class="col-md-6 text-center d-none d-md-block">
+            <img src="https://storage.googleapis.com/gemini-prod-us-west1-assets/images/google_search_sge_images/community.png" class="img-fluid" alt="Community Illustration">
+        </div>
+    </div>
+
+    <div class="py-5">
+        <h2 class="text-center fw-bold mb-5">How It Works</h2>
+        <div class="row g-4 text-center">
+            <div class="col-md-4">
+                <div class="card p-4 h-100">
+                    <div class="feature-icon bg-primary text-white fs-2 mb-3 mx-auto">
+                       <i class="fas fa-camera"></i>
+                    </div>
+                    <h4 class="fw-bold">1. Identify & Report</h4>
+                    <p class="text-secondary">Capture a photo of an issue. Our AI instantly categorizes it and tags the location automatically.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                 <div class="card p-4 h-100">
+                     <div class="feature-icon bg-primary text-white fs-2 mb-3 mx-auto">
+                        <i class="fas fa-tasks"></i>
+                    </div>
+                    <h4 class="fw-bold">2. Track Progress</h4>
+                    <p class="text-secondary">View all active issues on a live map and get real-time status updates as authorities take action.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                 <div class="card p-4 h-100">
+                     <div class="feature-icon bg-primary text-white fs-2 mb-3 mx-auto">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                    <h4 class="fw-bold">3. Confirm Resolution</h4>
+                    <p class="text-secondary">Once work is complete, you get notified. Mark the issue as resolved to help keep our city accountable.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<style>
+.feature-icon {
+    width: 70px;
+    height: 70px;
+    border-radius: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+</style>
+{% endblock %}

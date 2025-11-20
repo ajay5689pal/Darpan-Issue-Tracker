@@ -1,0 +1,22 @@
+{% block body_attributes %}data-background-type="default"{% endblock %}
+{% extends 'base.html' %}
+{% block title %}Login{% endblock %}
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6 col-lg-4">
+        <div class="card glass-card p-4">
+            <h2 class="text-center mb-4">Citizen Login</h2>
+            <form method="post">
+                <div class="mb-3">
+                    <label for="mobile_number" class="form-label">Mobile Number</label>
+                    <input type="tel" class="form-control" id="mobile_number" name="mobile_number" placeholder="Enter your registered number" required>
+                </div>
+                <div class="d-grid">
+                    <button type="submit" class="btn btn-primary btn-lg">Login with OTP</button>
+                </div>
+            </form>
+             <p class="text-center mt-3">Don't have an account? <a href="{{ url_for('register') }}" class="text-warning">Register</a></p>
+        </div>
+    </div>
+</div>
+{% endblock %}
