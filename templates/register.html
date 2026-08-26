@@ -1,21 +1,491 @@
 {% extends 'base.html' %}
-{% block title %}Register{% endblock %}
+
+{% block title %}Register - Darpan{% endblock %}
+
 {% block content %}
-<div class="row justify-content-center">
-    <div class="col-md-6 col-lg-4">
-        <div class="card glass-card p-4">
-            <h2 class="text-center mb-4">Citizen Registration</h2>
-            <form method="post">
-                <div class="mb-3">
-                    <label for="mobile_number" class="form-label">Mobile Number</label>
-                    <input type="tel" class="form-control" id="mobile_number" name="mobile_number" placeholder="Enter 10-digit number" required>
+
+<style>
+    .register-page {
+        min-height: calc(100vh - 140px);
+        display: flex;
+        align-items: center;
+        position: relative;
+        overflow: hidden;
+        padding: 60px 0;
+    }
+
+    /* Ambient background glow */
+    .register-page::before {
+        content: "";
+        position: absolute;
+        width: 520px;
+        height: 520px;
+        border-radius: 50%;
+        background: rgba(115, 87, 239, 0.13);
+        filter: blur(100px);
+        top: -250px;
+        right: -150px;
+        pointer-events: none;
+    }
+
+    .register-page::after {
+        content: "";
+        position: absolute;
+        width: 450px;
+        height: 450px;
+        border-radius: 50%;
+        background: rgba(56, 130, 246, 0.10);
+        filter: blur(100px);
+        bottom: -230px;
+        left: -180px;
+        pointer-events: none;
+    }
+
+    .register-wrapper {
+        position: relative;
+        z-index: 2;
+    }
+
+    /* LEFT SIDE */
+    .register-info {
+        padding: 40px;
+    }
+
+    .register-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 9px 16px;
+        border-radius: 50px;
+        background: rgba(115, 87, 239, 0.10);
+        color: #6548e8;
+        font-size: 13px;
+        font-weight: 700;
+        margin-bottom: 24px;
+    }
+
+    .register-info h1 {
+        font-size: clamp(38px, 4vw, 62px);
+        font-weight: 800;
+        line-height: 1.08;
+        letter-spacing: -1.5px;
+        color: #202638;
+        margin-bottom: 22px;
+    }
+
+    .register-info h1 span {
+        color: #6548e8;
+    }
+
+    .register-info p {
+        max-width: 520px;
+        color: #737b8c;
+        font-size: 17px;
+        line-height: 1.8;
+    }
+
+    .register-steps {
+        margin-top: 35px;
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+    }
+
+    .register-step {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        color: #3f485a;
+        font-weight: 600;
+    }
+
+    .step-number {
+        width: 40px;
+        height: 40px;
+        min-width: 40px;
+        border-radius: 13px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: rgba(115, 87, 239, 0.10);
+        color: #6548e8;
+        font-weight: 800;
+    }
+
+    /* REGISTER CARD */
+    .register-card {
+        position: relative;
+        padding: 42px;
+        border-radius: 30px;
+        overflow: hidden;
+
+        background: rgba(255, 255, 255, 0.94);
+        border: 1px solid rgba(115, 87, 239, 0.14);
+
+        box-shadow:
+            0 25px 70px rgba(28, 32, 65, 0.12),
+            0 5px 20px rgba(28, 32, 65, 0.05);
+
+        backdrop-filter: blur(15px);
+    }
+
+    .register-card::before {
+        content: "";
+        position: absolute;
+        width: 180px;
+        height: 180px;
+        border-radius: 50%;
+        background: rgba(115, 87, 239, 0.08);
+        top: -80px;
+        right: -70px;
+    }
+
+    .register-card-content {
+        position: relative;
+        z-index: 2;
+    }
+
+    .register-icon {
+        width: 68px;
+        height: 68px;
+        border-radius: 20px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        margin-bottom: 24px;
+
+        background: linear-gradient(135deg, #7a5af8, #4f46e5);
+        color: white;
+        font-size: 25px;
+
+        box-shadow: 0 12px 30px rgba(92, 72, 225, 0.30);
+    }
+
+    .register-card h2 {
+        font-size: 30px;
+        font-weight: 800;
+        color: #22293a;
+        margin-bottom: 8px;
+    }
+
+    .register-subtitle {
+        color: #81899a;
+        font-size: 15px;
+        margin-bottom: 32px;
+        line-height: 1.6;
+    }
+
+    /* FORM */
+    .form-label {
+        color: #4b5568;
+        font-size: 14px;
+        font-weight: 700;
+        margin-bottom: 10px;
+    }
+
+    .input-wrapper {
+        position: relative;
+    }
+
+    .input-wrapper i {
+        position: absolute;
+        top: 50%;
+        left: 17px;
+        transform: translateY(-50%);
+        color: #8d95a6;
+        z-index: 2;
+    }
+
+    .form-control {
+        height: 57px;
+        padding-left: 48px;
+
+        border-radius: 15px;
+        border: 1px solid #e4e7ee;
+        background: #fafbfe;
+
+        font-size: 15px;
+        color: #293246;
+
+        transition: all 0.25s ease;
+    }
+
+    .form-control:focus {
+        background: white;
+        border-color: #7457ef;
+        box-shadow: 0 0 0 4px rgba(116, 87, 239, 0.10);
+    }
+
+    .form-control::placeholder {
+        color: #abb1bd;
+    }
+
+    /* BUTTON */
+    .register-btn {
+        width: 100%;
+        height: 57px;
+
+        border: none;
+        border-radius: 16px;
+
+        background: linear-gradient(135deg, #7357ef, #4f46e5);
+        color: white;
+
+        font-size: 16px;
+        font-weight: 700;
+
+        box-shadow: 0 12px 28px rgba(91, 70, 220, 0.25);
+
+        transition: all 0.25s ease;
+    }
+
+    .register-btn:hover {
+        color: white;
+        transform: translateY(-2px);
+        box-shadow: 0 17px 35px rgba(91, 70, 220, 0.35);
+    }
+
+    .register-btn:active {
+        transform: translateY(0);
+    }
+
+    /* OTP NOTE */
+    .otp-note {
+        display: flex;
+        align-items: flex-start;
+        gap: 10px;
+
+        margin-top: 22px;
+        padding: 14px;
+
+        border-radius: 13px;
+        background: #f7f8fc;
+
+        color: #8991a1;
+        font-size: 12px;
+        line-height: 1.5;
+    }
+
+    .otp-note i {
+        color: #6548e8;
+        margin-top: 2px;
+    }
+
+    /* LOGIN */
+    .login-section {
+        margin-top: 28px;
+        padding-top: 24px;
+        border-top: 1px solid #edf0f5;
+
+        text-align: center;
+        color: #81899a;
+        font-size: 14px;
+    }
+
+    .login-section a {
+        color: #6548e8;
+        font-weight: 700;
+        text-decoration: none;
+        margin-left: 4px;
+    }
+
+    .login-section a:hover {
+        text-decoration: underline;
+    }
+
+    /* MOBILE */
+    @media (max-width: 991px) {
+
+        .register-info {
+            text-align: center;
+            padding: 20px 20px 45px;
+        }
+
+        .register-info p {
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .register-steps {
+            align-items: center;
+        }
+    }
+
+    @media (max-width: 576px) {
+
+        .register-page {
+            padding: 30px 0 50px;
+        }
+
+        .register-card {
+            padding: 28px 22px;
+            border-radius: 24px;
+        }
+
+        .register-info {
+            padding-left: 10px;
+            padding-right: 10px;
+        }
+
+        .register-info h1 {
+            font-size: 40px;
+        }
+    }
+</style>
+
+
+<div class="register-page">
+
+    <div class="container register-wrapper">
+
+        <div class="row align-items-center justify-content-center g-5">
+
+            <!-- LEFT SIDE -->
+            <div class="col-lg-6">
+
+                <div class="register-info">
+
+                    <div class="register-badge">
+                        <i class="fas fa-city"></i>
+                        Join Your Community
+                    </div>
+
+                    <h1>
+                        Make Your City<br>
+                        <span>Better Together.</span>
+                    </h1>
+
+                    <p>
+                        Create your Darpan citizen account and become part of
+                        a smarter, more transparent Greater Noida. Report
+                        issues and track real action.
+                    </p>
+
+                    <div class="register-steps">
+
+                        <div class="register-step">
+                            <div class="step-number">1</div>
+                            <span>Enter your mobile number</span>
+                        </div>
+
+                        <div class="register-step">
+                            <div class="step-number">2</div>
+                            <span>Verify your identity with OTP</span>
+                        </div>
+
+                        <div class="register-step">
+                            <div class="step-number">3</div>
+                            <span>Start reporting and tracking issues</span>
+                        </div>
+
+                    </div>
+
                 </div>
-                <div class="d-grid">
-                    <button type="submit" class="btn btn-primary btn-lg">Get OTP</button>
+
+            </div>
+
+
+            <!-- REGISTER CARD -->
+            <div class="col-lg-5 col-md-8">
+
+                <div class="register-card">
+
+                    <div class="register-card-content">
+
+                        <div class="register-icon">
+                            <i class="fas fa-user-plus"></i>
+                        </div>
+
+                        <h2>Create your account</h2>
+
+                        <p class="register-subtitle">
+                            Enter your mobile number to receive a secure
+                            one-time verification code.
+                        </p>
+
+
+                        <!-- BACKEND FLOW UNCHANGED -->
+                        <form method="post">
+
+                            <div class="mb-4">
+
+                                <label
+                                    for="mobile_number"
+                                    class="form-label"
+                                >
+                                    Mobile Number
+                                </label>
+
+                                <div class="input-wrapper">
+
+                                    <i class="fas fa-mobile-screen-button"></i>
+
+                                    <input
+                                        type="tel"
+                                        class="form-control"
+                                        id="mobile_number"
+                                        name="mobile_number"
+                                        placeholder="Enter 10-digit number"
+                                        maxlength="10"
+                                        inputmode="numeric"
+                                        required
+                                    >
+
+                                </div>
+
+                            </div>
+
+
+                            <div class="d-grid">
+
+                                <button
+                                    type="submit"
+                                    class="register-btn"
+                                >
+                                    <i class="fas fa-shield-halved me-2"></i>
+                                    Get OTP
+                                </button>
+
+                            </div>
+
+                        </form>
+
+
+                        <div class="otp-note">
+
+                            <i class="fas fa-lock"></i>
+
+                            <span>
+                                We'll send a one-time password to verify your
+                                mobile number securely.
+                            </span>
+
+                        </div>
+
+
+                        <div class="login-section">
+
+                            Already have an account?
+
+                            <a href="{{ url_for('login') }}">
+                                Login
+                                <i class="fas fa-arrow-right ms-1"></i>
+                            </a>
+
+                        </div>
+
+                    </div>
+
                 </div>
-            </form>
-            <p class="text-center mt-3">Already have an account? <a href="{{ url_for('login') }}" class="text-warning">Login</a></p>
+
+            </div>
+
         </div>
+
     </div>
+
 </div>
+
 {% endblock %}

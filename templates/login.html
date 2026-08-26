@@ -1,22 +1,482 @@
-{% block body_attributes %}data-background-type="default"{% endblock %}
 {% extends 'base.html' %}
-{% block title %}Login{% endblock %}
+
+{% block body_attributes %}data-background-type="default"{% endblock %}
+
+{% block title %}Citizen Login - Darpan{% endblock %}
+
 {% block content %}
-<div class="row justify-content-center">
-    <div class="col-md-6 col-lg-4">
-        <div class="card glass-card p-4">
-            <h2 class="text-center mb-4">Citizen Login</h2>
-            <form method="post">
-                <div class="mb-3">
-                    <label for="mobile_number" class="form-label">Mobile Number</label>
-                    <input type="tel" class="form-control" id="mobile_number" name="mobile_number" placeholder="Enter your registered number" required>
+
+<style>
+    .login-page {
+        min-height: calc(100vh - 140px);
+        display: flex;
+        align-items: center;
+        position: relative;
+        overflow: hidden;
+        padding: 60px 0;
+    }
+
+    /* Background glow */
+    .login-page::before {
+        content: "";
+        position: absolute;
+        width: 500px;
+        height: 500px;
+        border-radius: 50%;
+        background: rgba(105, 78, 255, 0.13);
+        filter: blur(90px);
+        top: -200px;
+        left: -180px;
+        pointer-events: none;
+    }
+
+    .login-page::after {
+        content: "";
+        position: absolute;
+        width: 450px;
+        height: 450px;
+        border-radius: 50%;
+        background: rgba(64, 140, 255, 0.10);
+        filter: blur(90px);
+        bottom: -220px;
+        right: -150px;
+        pointer-events: none;
+    }
+
+    .login-wrapper {
+        position: relative;
+        z-index: 2;
+    }
+
+    /* LEFT SIDE */
+    .login-info {
+        padding: 45px;
+    }
+
+    .login-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 9px 16px;
+        border-radius: 50px;
+        background: rgba(105, 78, 255, 0.10);
+        color: #6548e8;
+        font-size: 13px;
+        font-weight: 700;
+        margin-bottom: 24px;
+    }
+
+    .login-info h1 {
+        font-size: clamp(38px, 4vw, 62px);
+        font-weight: 800;
+        line-height: 1.08;
+        color: #202638;
+        margin-bottom: 22px;
+        letter-spacing: -1.5px;
+    }
+
+    .login-info h1 span {
+        color: #6548e8;
+    }
+
+    .login-info p {
+        font-size: 17px;
+        line-height: 1.8;
+        color: #737b8c;
+        max-width: 520px;
+    }
+
+    .login-features {
+        margin-top: 35px;
+        display: flex;
+        flex-direction: column;
+        gap: 17px;
+    }
+
+    .login-feature {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        color: #3c4558;
+        font-weight: 600;
+    }
+
+    .feature-check {
+        width: 38px;
+        height: 38px;
+        min-width: 38px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: rgba(101, 72, 232, 0.10);
+        color: #6548e8;
+    }
+
+    /* LOGIN CARD */
+    .login-card {
+        position: relative;
+        background: rgba(255, 255, 255, 0.92);
+        border: 1px solid rgba(100, 80, 255, 0.12);
+        border-radius: 30px;
+        padding: 42px;
+        box-shadow:
+            0 25px 70px rgba(28, 32, 65, 0.12),
+            0 5px 20px rgba(28, 32, 65, 0.05);
+        backdrop-filter: blur(15px);
+        overflow: hidden;
+    }
+
+    .login-card::before {
+        content: "";
+        position: absolute;
+        width: 180px;
+        height: 180px;
+        border-radius: 50%;
+        background: rgba(115, 87, 239, 0.08);
+        top: -80px;
+        right: -70px;
+    }
+
+    .login-card-content {
+        position: relative;
+        z-index: 2;
+    }
+
+    .login-icon {
+        width: 68px;
+        height: 68px;
+        border-radius: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 24px;
+        font-size: 25px;
+        color: white;
+        background: linear-gradient(135deg, #7a5af8, #4f46e5);
+        box-shadow: 0 12px 30px rgba(92, 72, 225, 0.30);
+    }
+
+    .login-card h2 {
+        font-size: 30px;
+        font-weight: 800;
+        color: #22293a;
+        margin-bottom: 8px;
+    }
+
+    .login-subtitle {
+        color: #81899a;
+        font-size: 15px;
+        margin-bottom: 32px;
+    }
+
+    /* INPUT */
+    .form-label {
+        color: #4b5568;
+        font-weight: 700;
+        font-size: 14px;
+        margin-bottom: 10px;
+    }
+
+    .input-wrapper {
+        position: relative;
+    }
+
+    .input-wrapper i {
+        position: absolute;
+        top: 50%;
+        left: 17px;
+        transform: translateY(-50%);
+        color: #8d95a6;
+        z-index: 2;
+    }
+
+    .form-control {
+        height: 56px;
+        padding-left: 48px;
+        border-radius: 15px;
+        border: 1px solid #e4e7ee;
+        background: #fafbfe;
+        font-size: 15px;
+        color: #293246;
+        transition: all 0.25s ease;
+    }
+
+    .form-control:focus {
+        background: white;
+        border-color: #7457ef;
+        box-shadow: 0 0 0 4px rgba(116, 87, 239, 0.10);
+    }
+
+    .form-control::placeholder {
+        color: #abb1bd;
+    }
+
+    /* BUTTON */
+    .login-btn {
+        height: 57px;
+        width: 100%;
+        border: none;
+        border-radius: 16px;
+        background: linear-gradient(135deg, #7357ef, #4f46e5);
+        color: white;
+        font-size: 16px;
+        font-weight: 700;
+        transition: all 0.25s ease;
+        box-shadow: 0 12px 28px rgba(91, 70, 220, 0.25);
+    }
+
+    .login-btn:hover {
+        transform: translateY(-2px);
+        color: white;
+        box-shadow: 0 17px 35px rgba(91, 70, 220, 0.35);
+    }
+
+    .login-btn:active {
+        transform: translateY(0);
+    }
+
+    /* SECURITY NOTE */
+    .security-note {
+        display: flex;
+        align-items: flex-start;
+        gap: 10px;
+        margin-top: 22px;
+        padding: 14px;
+        border-radius: 13px;
+        background: #f7f8fc;
+        color: #8991a1;
+        font-size: 12px;
+        line-height: 1.5;
+    }
+
+    .security-note i {
+        color: #6548e8;
+        margin-top: 2px;
+    }
+
+    /* REGISTER */
+    .register-section {
+        margin-top: 28px;
+        padding-top: 24px;
+        border-top: 1px solid #edf0f5;
+        text-align: center;
+        color: #81899a;
+        font-size: 14px;
+    }
+
+    .register-section a {
+        color: #6548e8;
+        font-weight: 700;
+        text-decoration: none;
+        margin-left: 4px;
+    }
+
+    .register-section a:hover {
+        text-decoration: underline;
+    }
+
+    /* MOBILE */
+    @media (max-width: 991px) {
+
+        .login-info {
+            text-align: center;
+            padding: 20px 20px 45px;
+        }
+
+        .login-info p {
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .login-features {
+            align-items: center;
+        }
+    }
+
+    @media (max-width: 576px) {
+
+        .login-page {
+            padding: 30px 0 50px;
+        }
+
+        .login-card {
+            padding: 28px 22px;
+            border-radius: 24px;
+        }
+
+        .login-info h1 {
+            font-size: 40px;
+        }
+
+        .login-info {
+            padding-left: 10px;
+            padding-right: 10px;
+        }
+
+        .login-feature {
+            font-size: 14px;
+        }
+    }
+</style>
+
+
+<div class="login-page">
+
+    <div class="container login-wrapper">
+
+        <div class="row align-items-center justify-content-center g-5">
+
+            <!-- LEFT CONTENT -->
+            <div class="col-lg-6">
+
+                <div class="login-info">
+
+                    <div class="login-badge">
+                        <i class="fas fa-shield-alt"></i>
+                        Secure Citizen Portal
+                    </div>
+
+                    <h1>
+                        Your City.<br>
+                        <span>Your Voice.</span>
+                    </h1>
+
+                    <p>
+                        Login to Darpan and stay connected with your community.
+                        Report civic issues, track progress, and help create a
+                        better Greater Noida.
+                    </p>
+
+                    <div class="login-features">
+
+                        <div class="login-feature">
+                            <div class="feature-check">
+                                <i class="fas fa-camera"></i>
+                            </div>
+
+                            <span>Report civic issues instantly</span>
+                        </div>
+
+                        <div class="login-feature">
+                            <div class="feature-check">
+                                <i class="fas fa-map-location-dot"></i>
+                            </div>
+
+                            <span>Track issues across your community</span>
+                        </div>
+
+                        <div class="login-feature">
+                            <div class="feature-check">
+                                <i class="fas fa-chart-line"></i>
+                            </div>
+
+                            <span>Follow real-time progress updates</span>
+                        </div>
+
+                    </div>
+
                 </div>
-                <div class="d-grid">
-                    <button type="submit" class="btn btn-primary btn-lg">Login with OTP</button>
+
+            </div>
+
+
+            <!-- LOGIN CARD -->
+            <div class="col-lg-5 col-md-8">
+
+                <div class="login-card">
+
+                    <div class="login-card-content">
+
+                        <div class="login-icon">
+                            <i class="fas fa-user"></i>
+                        </div>
+
+                        <h2>Welcome back</h2>
+
+                        <p class="login-subtitle">
+                            Enter your registered mobile number to continue.
+                        </p>
+
+
+                        <!-- BACKEND FLOW REMAINS SAME -->
+                        <form method="post">
+
+                            <div class="mb-4">
+
+                                <label
+                                    for="mobile_number"
+                                    class="form-label"
+                                >
+                                    Mobile Number
+                                </label>
+
+                                <div class="input-wrapper">
+
+                                    <i class="fas fa-mobile-screen-button"></i>
+
+                                    <input
+                                        type="tel"
+                                        class="form-control"
+                                        id="mobile_number"
+                                        name="mobile_number"
+                                        placeholder="Enter your registered number"
+                                        required
+                                    >
+
+                                </div>
+
+                            </div>
+
+
+                            <div class="d-grid">
+
+                                <button
+                                    type="submit"
+                                    class="login-btn"
+                                >
+                                    <i class="fas fa-paper-plane me-2"></i>
+                                    Continue with OTP
+                                </button>
+
+                            </div>
+
+                        </form>
+
+
+                        <div class="security-note">
+
+                            <i class="fas fa-lock"></i>
+
+                            <span>
+                                Your mobile number is securely used to verify
+                                your identity through a one-time password.
+                            </span>
+
+                        </div>
+
+
+                        <div class="register-section">
+
+                            Don't have an account?
+
+                            <a href="{{ url_for('register') }}">
+                                Create Account
+                                <i class="fas fa-arrow-right ms-1"></i>
+                            </a>
+
+                        </div>
+
+                    </div>
+
                 </div>
-            </form>
-             <p class="text-center mt-3">Don't have an account? <a href="{{ url_for('register') }}" class="text-warning">Register</a></p>
+
+            </div>
+
         </div>
+
     </div>
+
 </div>
+
 {% endblock %}

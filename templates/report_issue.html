@@ -1,265 +1,2595 @@
 {% extends 'base.html' %}
+
 {% block title %}Report an Issue{% endblock %}
 
+
 {% block content %}
-<div class="row justify-content-center">
-    <div class="col-md-8 col-lg-6">
-        <div class="card glass-card p-4">
-            <h2 class="text-center mb-4">Report a New Issue</h2>
-            
-            <div id="loading" class="text-center">
-                <div class="spinner-border text-warning" role="status">
-                    <span class="visually-hidden">Loading...</span>
-                </div>
-                <p>Getting your location and starting camera...</p>
+
+<style>
+
+    /* =====================================================
+       PAGE
+    ===================================================== */
+
+    .report-page {
+        min-height: calc(100vh - 80px);
+        padding: 45px 20px 70px;
+        position: relative;
+        overflow: hidden;
+
+        background:
+            radial-gradient(
+                circle at 15% 20%,
+                rgba(124, 58, 237, 0.20),
+                transparent 30%
+            ),
+            radial-gradient(
+                circle at 85% 80%,
+                rgba(37, 99, 235, 0.18),
+                transparent 30%
+            ),
+            linear-gradient(
+                135deg,
+                #f7f8fc,
+                #eef2ff,
+                #f8fafc
+            );
+    }
+
+
+    .report-page::before {
+        content: "";
+
+        position: absolute;
+
+        width: 500px;
+        height: 500px;
+
+        top: -250px;
+        right: -150px;
+
+        border-radius: 50%;
+
+        background:
+            radial-gradient(
+                circle,
+                rgba(139, 92, 246, 0.18),
+                transparent 70%
+            );
+
+        pointer-events: none;
+    }
+
+
+    /* =====================================================
+       MAIN CONTAINER
+    ===================================================== */
+
+    .report-container {
+        max-width: 1180px;
+        margin: auto;
+        position: relative;
+        z-index: 2;
+    }
+
+
+    /* =====================================================
+       HERO HEADER
+    ===================================================== */
+
+    .report-header {
+        text-align: center;
+        margin-bottom: 35px;
+    }
+
+
+    .report-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+
+        padding: 8px 16px;
+
+        margin-bottom: 15px;
+
+        border-radius: 999px;
+
+        font-size: 0.78rem;
+        font-weight: 700;
+
+        color: #6d28d9;
+
+        background:
+            rgba(255, 255, 255, 0.75);
+
+        border:
+            1px solid
+            rgba(139, 92, 246, 0.15);
+
+        box-shadow:
+            0 8px 30px
+            rgba(99, 102, 241, 0.08);
+
+        backdrop-filter:
+            blur(10px);
+    }
+
+
+    .report-header h1 {
+        margin: 0;
+
+        font-size:
+            clamp(2rem, 5vw, 3.3rem);
+
+        font-weight: 800;
+
+        letter-spacing: -1.5px;
+
+        color: #172033;
+    }
+
+
+    .report-header h1 span {
+
+        background:
+            linear-gradient(
+                135deg,
+                #7c3aed,
+                #2563eb
+            );
+
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+
+
+    .report-header p {
+        max-width: 600px;
+
+        margin:
+            14px auto 0;
+
+        color: #64748b;
+
+        font-size: 1rem;
+
+        line-height: 1.7;
+    }
+
+
+    /* =====================================================
+       MAIN REPORT CARD
+    ===================================================== */
+
+    .report-card {
+
+        display: grid;
+
+        grid-template-columns:
+            1.15fr 0.85fr;
+
+        min-height: 670px;
+
+        overflow: hidden;
+
+        border-radius: 28px;
+
+        background:
+            rgba(255, 255, 255, 0.78);
+
+        border:
+            1px solid
+            rgba(255, 255, 255, 0.9);
+
+        box-shadow:
+            0 25px 80px
+            rgba(15, 23, 42, 0.14);
+
+        backdrop-filter:
+            blur(20px);
+
+    }
+
+
+    /* =====================================================
+       LEFT SIDE
+    ===================================================== */
+
+    .capture-section {
+
+        padding: 28px;
+
+        border-right:
+            1px solid
+            rgba(148, 163, 184, 0.15);
+
+        background:
+            linear-gradient(
+                180deg,
+                #ffffff,
+                #f8fafc
+            );
+
+    }
+
+
+    .section-top {
+
+        display: flex;
+
+        align-items: center;
+
+        justify-content: space-between;
+
+        margin-bottom: 20px;
+
+    }
+
+
+    .section-title {
+
+        display: flex;
+
+        align-items: center;
+
+        gap: 12px;
+
+    }
+
+
+    .section-icon {
+
+        width: 45px;
+        height: 45px;
+
+        display: flex;
+
+        align-items: center;
+        justify-content: center;
+
+        border-radius: 14px;
+
+        color: white;
+
+        font-size: 1.1rem;
+
+        background:
+            linear-gradient(
+                135deg,
+                #7c3aed,
+                #4f46e5
+            );
+
+        box-shadow:
+            0 10px 25px
+            rgba(124, 58, 237, 0.28);
+
+    }
+
+
+    .section-title h3 {
+
+        margin: 0;
+
+        font-size: 1.05rem;
+
+        font-weight: 750;
+
+        color: #1e293b;
+
+    }
+
+
+    .section-title p {
+
+        margin: 3px 0 0;
+
+        font-size: 0.78rem;
+
+        color: #94a3b8;
+
+    }
+
+
+    .live-indicator {
+
+        display: flex;
+
+        align-items: center;
+
+        gap: 7px;
+
+        padding: 7px 11px;
+
+        border-radius: 999px;
+
+        font-size: 0.72rem;
+
+        font-weight: 700;
+
+        color: #059669;
+
+        background:
+            rgba(16, 185, 129, 0.08);
+
+    }
+
+
+    .live-dot {
+
+        width: 7px;
+        height: 7px;
+
+        border-radius: 50%;
+
+        background: #10b981;
+
+        box-shadow:
+            0 0 0 5px
+            rgba(16, 185, 129, 0.10);
+
+        animation:
+            pulse 1.8s infinite;
+
+    }
+
+
+    @keyframes pulse {
+
+        0% {
+            transform: scale(1);
+            opacity: 1;
+        }
+
+        50% {
+            transform: scale(1.3);
+            opacity: 0.6;
+        }
+
+        100% {
+            transform: scale(1);
+            opacity: 1;
+        }
+
+    }
+
+
+    /* =====================================================
+       CAMERA
+    ===================================================== */
+
+    .camera-container {
+
+        position: relative;
+
+        width: 100%;
+
+        height: 430px;
+
+        overflow: hidden;
+
+        border-radius: 22px;
+
+        background:
+            linear-gradient(
+                135deg,
+                #0f172a,
+                #020617
+            );
+
+        box-shadow:
+            inset 0 0 0 1px
+            rgba(255,255,255,0.08),
+
+            0 18px 45px
+            rgba(15,23,42,0.16);
+
+    }
+
+
+    #camera-feed,
+    #image-preview {
+
+        width: 100%;
+
+        height: 100%;
+
+        display: block;
+
+        object-fit: cover;
+
+    }
+
+
+    #image-preview {
+
+        display: none;
+
+    }
+
+
+    /* Camera overlay */
+
+    .camera-overlay {
+
+        position: absolute;
+
+        inset: 0;
+
+        pointer-events: none;
+
+        border:
+            1px solid
+            rgba(255,255,255,0.08);
+
+        border-radius: 22px;
+
+        z-index: 2;
+
+    }
+
+
+    .camera-overlay::before {
+
+        content: "";
+
+        position: absolute;
+
+        top: 18px;
+        left: 18px;
+
+        width: 34px;
+        height: 34px;
+
+        border-top:
+            2px solid
+            rgba(255,255,255,0.8);
+
+        border-left:
+            2px solid
+            rgba(255,255,255,0.8);
+
+        border-radius:
+            8px 0 0 0;
+
+    }
+
+
+    .camera-overlay::after {
+
+        content: "";
+
+        position: absolute;
+
+        bottom: 18px;
+        right: 18px;
+
+        width: 34px;
+        height: 34px;
+
+        border-bottom:
+            2px solid
+            rgba(255,255,255,0.8);
+
+        border-right:
+            2px solid
+            rgba(255,255,255,0.8);
+
+        border-radius:
+            0 0 8px 0;
+
+    }
+
+
+    .camera-status {
+
+        position: absolute;
+
+        top: 18px;
+        left: 18px;
+
+        z-index: 4;
+
+        display: flex;
+
+        align-items: center;
+
+        gap: 8px;
+
+        padding: 8px 12px;
+
+        border-radius: 10px;
+
+        color: white;
+
+        font-size: 0.72rem;
+
+        font-weight: 700;
+
+        background:
+            rgba(15, 23, 42, 0.65);
+
+        backdrop-filter:
+            blur(10px);
+
+    }
+
+
+    .camera-status-dot {
+
+        width: 7px;
+        height: 7px;
+
+        border-radius: 50%;
+
+        background: #ef4444;
+
+        box-shadow:
+            0 0 10px
+            #ef4444;
+
+    }
+
+
+    .capture-success {
+
+        position: absolute;
+
+        top: 18px;
+        right: 18px;
+
+        z-index: 5;
+
+        display: none;
+
+        align-items: center;
+
+        gap: 7px;
+
+        padding: 8px 12px;
+
+        border-radius: 10px;
+
+        color: #ecfdf5;
+
+        font-size: 0.75rem;
+
+        font-weight: 700;
+
+        background:
+            rgba(5, 150, 105, 0.85);
+
+        backdrop-filter:
+            blur(10px);
+
+    }
+
+
+    /* =====================================================
+       CAMERA BUTTONS
+    ===================================================== */
+
+    .capture-actions {
+
+        display: flex;
+
+        align-items: center;
+
+        justify-content: center;
+
+        gap: 12px;
+
+        margin-top: 22px;
+
+    }
+
+
+    .capture-btn {
+
+        border: none;
+
+        min-width: 190px;
+
+        padding: 14px 24px;
+
+        border-radius: 14px;
+
+        font-size: 0.9rem;
+
+        font-weight: 700;
+
+        color: white;
+
+        cursor: pointer;
+
+        background:
+            linear-gradient(
+                135deg,
+                #7c3aed,
+                #4f46e5
+            );
+
+        box-shadow:
+            0 12px 25px
+            rgba(99, 102, 241, 0.28);
+
+        transition:
+            transform 0.2s ease,
+            box-shadow 0.2s ease;
+
+    }
+
+
+    .capture-btn:hover {
+
+        transform:
+            translateY(-3px);
+
+        box-shadow:
+            0 18px 32px
+            rgba(99, 102, 241, 0.35);
+
+    }
+
+
+    .capture-btn i {
+
+        margin-right: 8px;
+
+    }
+
+
+    .recapture-btn {
+
+        border:
+            1px solid
+            #cbd5e1;
+
+        padding: 13px 23px;
+
+        border-radius: 14px;
+
+        background: white;
+
+        color: #334155;
+
+        font-size: 0.88rem;
+
+        font-weight: 700;
+
+        cursor: pointer;
+
+        transition:
+            all 0.2s ease;
+
+    }
+
+
+    .recapture-btn:hover {
+
+        background: #f8fafc;
+
+        border-color: #8b5cf6;
+
+        color: #7c3aed;
+
+    }
+
+
+    /* =====================================================
+       RIGHT SIDE
+    ===================================================== */
+
+    .details-section {
+
+        padding: 30px;
+
+        background:
+            linear-gradient(
+                180deg,
+                rgba(248, 250, 252, 0.95),
+                rgba(255,255,255,0.95)
+            );
+
+    }
+
+
+    .details-heading {
+
+        margin-bottom: 25px;
+
+    }
+
+
+    .details-heading h2 {
+
+        margin: 0 0 7px;
+
+        color: #172033;
+
+        font-size: 1.35rem;
+
+        font-weight: 800;
+
+    }
+
+
+    .details-heading p {
+
+        margin: 0;
+
+        font-size: 0.83rem;
+
+        color: #94a3b8;
+
+    }
+
+
+    /* =====================================================
+       LOCATION STATUS
+    ===================================================== */
+
+    .location-card {
+
+        display: flex;
+
+        align-items: center;
+
+        gap: 13px;
+
+        padding: 15px;
+
+        margin-bottom: 22px;
+
+        border-radius: 16px;
+
+        background:
+            linear-gradient(
+                135deg,
+                rgba(124,58,237,0.07),
+                rgba(37,99,235,0.06)
+            );
+
+        border:
+            1px solid
+            rgba(124,58,237,0.10);
+
+    }
+
+
+    .location-icon {
+
+        width: 42px;
+        height: 42px;
+
+        flex-shrink: 0;
+
+        display: flex;
+
+        align-items: center;
+        justify-content: center;
+
+        border-radius: 13px;
+
+        color: #7c3aed;
+
+        background:
+            rgba(124,58,237,0.10);
+
+    }
+
+
+    .location-card h5 {
+
+        margin: 0 0 3px;
+
+        font-size: 0.83rem;
+
+        font-weight: 750;
+
+        color: #334155;
+
+    }
+
+
+    .location-card p {
+
+        margin: 0;
+
+        font-size: 0.75rem;
+
+        color: #94a3b8;
+
+    }
+
+
+    /* =====================================================
+       FORM LABEL
+    ===================================================== */
+
+    .custom-label {
+
+        display: flex;
+
+        align-items: center;
+
+        justify-content: space-between;
+
+        margin-bottom: 9px;
+
+        font-size: 0.82rem;
+
+        font-weight: 750;
+
+        color: #334155;
+
+    }
+
+
+    .optional-text {
+
+        font-size: 0.7rem;
+
+        font-weight: 600;
+
+        color: #94a3b8;
+
+    }
+
+
+    /* =====================================================
+       VOICE SECTION
+    ===================================================== */
+
+    .voice-card {
+
+        padding: 16px;
+
+        margin-bottom: 22px;
+
+        border-radius: 18px;
+
+        background: white;
+
+        border:
+            1px solid
+            #e2e8f0;
+
+    }
+
+
+    .voice-actions {
+
+        display: flex;
+
+        gap: 10px;
+
+    }
+
+
+    .record-btn {
+
+        flex: 1;
+
+        border: none;
+
+        padding: 11px 14px;
+
+        border-radius: 11px;
+
+        color: white;
+
+        font-size: 0.8rem;
+
+        font-weight: 700;
+
+        cursor: pointer;
+
+        background:
+            linear-gradient(
+                135deg,
+                #10b981,
+                #059669
+            );
+
+        transition:
+            all 0.2s ease;
+
+    }
+
+
+    .record-btn:hover:not(:disabled) {
+
+        transform:
+            translateY(-2px);
+
+        box-shadow:
+            0 8px 18px
+            rgba(16,185,129,0.25);
+
+    }
+
+
+    .stop-btn {
+
+        flex: 1;
+
+        border: none;
+
+        padding: 11px 14px;
+
+        border-radius: 11px;
+
+        color: white;
+
+        font-size: 0.8rem;
+
+        font-weight: 700;
+
+        cursor: pointer;
+
+        background:
+            linear-gradient(
+                135deg,
+                #f43f5e,
+                #e11d48
+            );
+
+        opacity: 0.55;
+
+    }
+
+
+    .stop-btn:not(:disabled) {
+
+        opacity: 1;
+
+    }
+
+
+    #voice-visualizer {
+
+        width: 100%;
+
+        height: 55px;
+
+        margin-top: 12px;
+
+        border-radius: 10px;
+
+        background:
+            #0f172a;
+
+    }
+
+
+    #audio-playback {
+
+        width: 100%;
+
+        margin-top: 12px;
+
+    }
+
+
+    /* =====================================================
+       DESCRIPTION
+    ===================================================== */
+
+    .description-box {
+
+        width: 100%;
+
+        min-height: 120px;
+
+        resize: vertical;
+
+        padding: 14px;
+
+        border-radius: 15px;
+
+        outline: none;
+
+        font-size: 0.88rem;
+
+        color: #334155;
+
+        border:
+            1px solid
+            #dbe3ee;
+
+        background:
+            rgba(248,250,252,0.7);
+
+        transition:
+            border-color 0.2s ease,
+            box-shadow 0.2s ease,
+            background 0.2s ease;
+
+    }
+
+
+    .description-box:focus {
+
+        background: white;
+
+        border-color:
+            #8b5cf6;
+
+        box-shadow:
+            0 0 0 4px
+            rgba(139,92,246,0.10);
+
+    }
+
+
+    /* =====================================================
+       SUBMIT BUTTON
+    ===================================================== */
+
+    .submit-btn {
+
+        width: 100%;
+
+        margin-top: 24px;
+
+        border: none;
+
+        padding: 16px;
+
+        border-radius: 16px;
+
+        color: white;
+
+        font-size: 0.95rem;
+
+        font-weight: 750;
+
+        cursor: pointer;
+
+        background:
+            linear-gradient(
+                135deg,
+                #7c3aed,
+                #2563eb
+            );
+
+        box-shadow:
+            0 15px 30px
+            rgba(79,70,229,0.25);
+
+        transition:
+            all 0.25s ease;
+
+    }
+
+
+    .submit-btn:hover:not(:disabled) {
+
+        transform:
+            translateY(-3px);
+
+        box-shadow:
+            0 22px 38px
+            rgba(79,70,229,0.32);
+
+    }
+
+
+    .submit-btn:disabled {
+
+        opacity: 0.65;
+
+        cursor: not-allowed;
+
+    }
+
+
+    .submit-btn i {
+
+        margin-right: 9px;
+
+    }
+
+
+    /* =====================================================
+       LOADING
+    ===================================================== */
+
+    #loading {
+
+        padding: 70px 20px;
+
+        text-align: center;
+
+    }
+
+
+    .loading-orb {
+
+        width: 70px;
+        height: 70px;
+
+        margin: auto auto 20px;
+
+        border-radius: 50%;
+
+        border:
+            4px solid
+            rgba(124,58,237,0.12);
+
+        border-top-color:
+            #7c3aed;
+
+        animation:
+            rotate-loader 1s linear infinite;
+
+    }
+
+
+    @keyframes rotate-loader {
+
+        to {
+            transform: rotate(360deg);
+        }
+
+    }
+
+
+    #loading h4 {
+
+        color: #334155;
+
+        font-weight: 750;
+
+        margin-bottom: 8px;
+
+    }
+
+
+    #loading p {
+
+        color: #94a3b8;
+
+        font-size: 0.85rem;
+
+    }
+
+
+    /* =====================================================
+       STATUS
+    ===================================================== */
+
+    #submission-status {
+
+        margin-top: 20px;
+
+        padding: 14px;
+
+        border-radius: 14px;
+
+        font-size: 0.85rem;
+
+        font-weight: 600;
+
+    }
+
+
+    /* =====================================================
+       RESPONSIVE
+    ===================================================== */
+
+    @media (max-width: 900px) {
+
+        .report-card {
+
+            grid-template-columns:
+                1fr;
+
+        }
+
+
+        .capture-section {
+
+            border-right: none;
+
+            border-bottom:
+                1px solid
+                rgba(148,163,184,0.15);
+
+        }
+
+    }
+
+
+    @media (max-width: 576px) {
+
+        .report-page {
+
+            padding:
+                25px 12px 50px;
+
+        }
+
+
+        .report-header h1 {
+
+            font-size: 2rem;
+
+        }
+
+
+        .report-card {
+
+            border-radius: 20px;
+
+        }
+
+
+        .capture-section,
+        .details-section {
+
+            padding: 18px;
+
+        }
+
+
+        .camera-container {
+
+            height: 330px;
+
+            border-radius: 17px;
+
+        }
+
+
+        .section-top {
+
+            align-items: flex-start;
+
+        }
+
+
+        .live-indicator {
+
+            display: none;
+
+        }
+
+    }
+
+</style>
+
+
+
+<div class="report-page">
+
+    <div class="report-container">
+
+
+        <!-- ============================================
+             HEADER
+        ============================================= -->
+
+        <div class="report-header">
+
+            <div class="report-badge">
+
+                <i class="fas fa-shield-alt"></i>
+
+                Civic Issue Reporting
+
             </div>
 
-            <div id="report-form" style="display: none;">
-                <div class="mb-3 position-relative" style="min-height: 250px;">
-                    <video id="camera-feed" width="100%" autoplay playsinline muted style="border-radius: 10px;"></video>
-                    <img id="image-preview" src="#" alt="Captured Image" class="img-fluid" style="display:none; border-radius: 10px;">
-                </div>
-                <div class="d-grid gap-2 d-md-flex justify-content-md-center mb-3">
-                    <button id="capture-btn" class="btn btn-outline-light" style="color: black;">Capture Image</button>
-                    <button id="recapture-btn" class="btn btn-outline-warning" style="display:none;">Recapture</button>
-                </div>
 
-                <div class="mb-3">
-                    <label class="form-label">Record a Voice Note (Optional)</label>
-                    <div class="d-flex align-items-center">
-                        <button id="record-btn" class="btn btn-sm btn-success">Start Recording</button>
-                        <button id="stop-btn" class="btn btn-sm btn-danger ms-2" disabled>Stop Recording</button>
-                    </div>
-                    <canvas id="voice-visualizer" width="100%" height="50" class="mt-2" style="display: none; border-radius: 5px; background-color: rgba(0,0,0,0.2);"></canvas>
-                    <audio id="audio-playback" controls class="mt-2" style="display: none; width: 100%;"></audio>
-                </div>
+            <h1>
 
-                <div class="mb-3">
-                    <label for="description" class="form-label">Description (Optional)</label>
-                    <textarea class="form-control" id="description" rows="3"></textarea>
-                </div>
+                Report an
+                <span>Issue</span>
 
-                <div class="d-grid">
-                    <button id="submit-issue-btn" class="btn btn-primary btn-lg">Submit Issue</button>
-                </div>
-            </div>
-            
-            <div id="submission-status" class="text-center mt-3" style="display:none;"></div>
+            </h1>
+
+
+            <p>
+
+                Help improve your community.
+                Capture the issue, add details, and we'll
+                securely submit it with your location.
+
+            </p>
+
         </div>
+
+
+
+        <!-- ============================================
+             MAIN CARD
+        ============================================= -->
+
+        <div class="report-card">
+
+
+            <!-- ========================================
+                 LOADING
+            ========================================= -->
+
+            <div
+                id="loading"
+                style="
+                    grid-column: 1 / -1;
+                "
+            >
+
+                <div class="loading-orb"></div>
+
+                <h4>Preparing your report</h4>
+
+                <p>
+                    Accessing your location and camera...
+                </p>
+
+            </div>
+
+
+
+            <!-- ========================================
+                 REPORT FORM
+            ========================================= -->
+
+            <div
+                id="report-form"
+                style="
+                    display:none;
+                    grid-column: 1 / -1;
+                "
+            >
+
+                <div
+                    style="
+                        display:grid;
+                        grid-template-columns:1.15fr 0.85fr;
+                    "
+                    class="report-form-grid"
+                >
+
+
+                    <!-- =================================
+                         LEFT CAMERA SIDE
+                    ================================== -->
+
+                    <div class="capture-section">
+
+
+                        <div class="section-top">
+
+                            <div class="section-title">
+
+                                <div class="section-icon">
+
+                                    <i class="fas fa-camera"></i>
+
+                                </div>
+
+
+                                <div>
+
+                                    <h3>
+                                        Capture Evidence
+                                    </h3>
+
+                                    <p>
+                                        Make sure the issue is clearly visible
+                                    </p>
+
+                                </div>
+
+                            </div>
+
+
+                            <div class="live-indicator">
+
+                                <span class="live-dot"></span>
+
+                                Camera Ready
+
+                            </div>
+
+                        </div>
+
+
+
+                        <!-- CAMERA -->
+
+                        <div class="camera-container">
+
+
+                            <video
+                                id="camera-feed"
+                                autoplay
+                                playsinline
+                                muted
+                            ></video>
+
+
+                            <img
+                                id="image-preview"
+                                src="#"
+                                alt="Captured Issue"
+                            >
+
+
+                            <div class="camera-overlay"></div>
+
+
+                            <div class="camera-status">
+
+                                <span class="camera-status-dot"></span>
+
+                                LIVE
+
+                            </div>
+
+
+                            <div
+                                class="capture-success"
+                                id="capture-success"
+                            >
+
+                                <i class="fas fa-check-circle"></i>
+
+                                Image Captured
+
+                            </div>
+
+                        </div>
+
+
+
+                        <!-- CAMERA BUTTONS -->
+
+                        <div class="capture-actions">
+
+
+                            <button
+                                id="capture-btn"
+                                class="capture-btn"
+                                type="button"
+                            >
+
+                                <i class="fas fa-camera"></i>
+
+                                Capture Image
+
+                            </button>
+
+
+                            <button
+                                id="recapture-btn"
+                                class="recapture-btn"
+                                type="button"
+                                style="display:none;"
+                            >
+
+                                <i class="fas fa-rotate"></i>
+
+                                Capture Again
+
+                            </button>
+
+
+                        </div>
+
+
+                    </div>
+
+
+
+                    <!-- =================================
+                         RIGHT DETAILS SIDE
+                    ================================== -->
+
+                    <div class="details-section">
+
+
+                        <div class="details-heading">
+
+                            <h2>
+                                Issue Details
+                            </h2>
+
+                            <p>
+                                Add optional information to help us understand the problem.
+                            </p>
+
+                        </div>
+
+
+
+                        <!-- LOCATION -->
+
+                        <div class="location-card">
+
+                            <div class="location-icon">
+
+                                <i class="fas fa-location-dot"></i>
+
+                            </div>
+
+
+                            <div>
+
+                                <h5>
+                                    Location Detected
+                                </h5>
+
+                                <p>
+                                    Your current location will be attached securely.
+                                </p>
+
+                            </div>
+
+                        </div>
+
+
+
+                        <!-- VOICE NOTE -->
+
+                        <div class="voice-card">
+
+
+                            <div class="custom-label">
+
+                                <span>
+
+                                    <i
+                                        class="fas fa-microphone"
+                                        style="
+                                            color:#10b981;
+                                            margin-right:6px;
+                                        "
+                                    ></i>
+
+                                    Voice Note
+
+                                </span>
+
+
+                                <span class="optional-text">
+
+                                    Optional
+
+                                </span>
+
+                            </div>
+
+
+
+                            <div class="voice-actions">
+
+
+                                <button
+                                    id="record-btn"
+                                    class="record-btn"
+                                    type="button"
+                                >
+
+                                    <i class="fas fa-microphone"></i>
+
+                                    Start Recording
+
+                                </button>
+
+
+                                <button
+                                    id="stop-btn"
+                                    class="stop-btn"
+                                    type="button"
+                                    disabled
+                                >
+
+                                    <i class="fas fa-stop"></i>
+
+                                    Stop
+
+                                </button>
+
+
+                            </div>
+
+
+
+                            <canvas
+                                id="voice-visualizer"
+                                width="600"
+                                height="55"
+                                style="display:none;"
+                            ></canvas>
+
+
+
+                            <audio
+                                id="audio-playback"
+                                controls
+                                style="display:none;"
+                            ></audio>
+
+
+                        </div>
+
+
+
+                        <!-- DESCRIPTION -->
+
+                        <div>
+
+                            <div class="custom-label">
+
+                                <label for="description">
+
+                                    <i
+                                        class="fas fa-align-left"
+                                        style="
+                                            color:#7c3aed;
+                                            margin-right:6px;
+                                        "
+                                    ></i>
+
+                                    Describe the Issue
+
+                                </label>
+
+
+                                <span class="optional-text">
+
+                                    Optional
+
+                                </span>
+
+                            </div>
+
+
+                            <textarea
+                                id="description"
+                                class="description-box"
+                                placeholder="Example: Large pile of garbage blocking the roadside near the market..."
+                            ></textarea>
+
+                        </div>
+
+
+
+                        <!-- SUBMIT -->
+
+                        <button
+                            id="submit-issue-btn"
+                            class="submit-btn"
+                            type="button"
+                        >
+
+                            <i class="fas fa-paper-plane"></i>
+
+                            Submit Issue Report
+
+                        </button>
+
+
+                        <!-- STATUS -->
+
+                        <div
+                            id="submission-status"
+                            style="display:none;"
+                        ></div>
+
+
+                    </div>
+
+
+                </div>
+
+
+            </div>
+
+
+        </div>
+
+
     </div>
+
 </div>
+
+
+
+<style>
+
+    @media (max-width: 900px) {
+
+        .report-form-grid {
+
+            grid-template-columns:
+                1fr !important;
+
+        }
+
+    }
+
+</style>
+
 {% endblock %}
 
+
+
 {% block scripts_extra %}
+
 <script>
-    document.addEventListener('DOMContentLoaded', () => {
-        // --- Element References ---
-        const loadingDiv = document.getElementById('loading');
-        const reportForm = document.getElementById('report-form');
-        const video = document.getElementById('camera-feed');
-        const imagePreview = document.getElementById('image-preview');
-        const canvas = document.createElement('canvas'); // Off-screen canvas
-        const captureBtn = document.getElementById('capture-btn');
-        const recaptureBtn = document.getElementById('recapture-btn');
-        const submitBtn = document.getElementById('submit-issue-btn');
-        const descriptionInput = document.getElementById('description');
-        const statusDiv = document.getElementById('submission-status');
-        
-        // --- Voice Recording Elements ---
-        const recordBtn = document.getElementById('record-btn');
-        const stopBtn = document.getElementById('stop-btn');
-        const audioPlayback = document.getElementById('audio-playback');
-        const visualizerCanvas = document.getElementById('voice-visualizer');
-        const visualizerCtx = visualizerCanvas.getContext('2d');
 
-        // --- State Variables ---
-        let capturedImageDataURL = null;
-        let recordedAudioBlob = null;
-        let mediaRecorder;
-        let audioChunks = [];
-        let userLocation = {};
-        let audioContext, analyser, source, animationFrameId;
-
-        // --- Core Functions ---
-        async function setupCameraAndLocation() {
-            loadingDiv.style.display = 'block';
-            try {
-                // Get Location
-                const position = await new Promise((resolve, reject) => {
-                    navigator.geolocation.getCurrentPosition(resolve, reject, {
-                        enableHighAccuracy: true,
-                        timeout: 10000,
-                        maximumAge: 0
-                    });
-                });
-                userLocation = {
-                    latitude: position.coords.latitude,
-                    longitude: position.coords.longitude
-                };
-
-                // Get Camera & Microphone
-                const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' }, audio: true });
-                video.srcObject = stream;
-                
-                // Setup MediaRecorder for audio
-                mediaRecorder = new MediaRecorder(stream);
-                mediaRecorder.ondataavailable = e => audioChunks.push(e.data);
-                mediaRecorder.onstop = () => {
-                    recordedAudioBlob = new Blob(audioChunks, { 'type' : 'audio/webm; codecs=opus' });
-                    audioChunks = [];
-                    const audioURL = window.URL.createObjectURL(recordedAudioBlob);
-                    audioPlayback.src = audioURL;
-                    audioPlayback.style.display = 'block';
-                    stopVisualizer();
-                };
-
-                // Setup AudioContext for visualizer
-                audioContext = new (window.AudioContext || window.webkitAudioContext)();
-                analyser = audioContext.createAnalyser();
-                source = audioContext.createMediaStreamSource(stream);
-                source.connect(analyser);
-
-                reportForm.style.display = 'block';
-            } catch (err) {
-                console.error("Error accessing media devices or location.", err);
-                statusDiv.innerHTML = `<p class="text-danger">Error: Could not access camera or location. Please grant permissions and refresh.</p>`;
-                statusDiv.style.display = 'block';
-            } finally {
-                loadingDiv.style.display = 'none';
-            }
-        }
-
-        // --- Voice Visualizer Functions ---
-        function startVisualizer() {
-            visualizerCanvas.style.display = 'block';
-            analyser.fftSize = 256;
-            const bufferLength = analyser.frequencyBinCount;
-            const dataArray = new Uint8Array(bufferLength);
-
-            visualizerCtx.clearRect(0, 0, visualizerCanvas.width, visualizerCanvas.height);
-
-            function draw() {
-                animationFrameId = requestAnimationFrame(draw);
-                analyser.getByteFrequencyData(dataArray);
-
-                visualizerCtx.fillStyle = 'rgba(0, 0, 0, 0.2)';
-                visualizerCtx.fillRect(0, 0, visualizerCanvas.width, visualizerCanvas.height);
-
-                const barWidth = (visualizerCanvas.width / bufferLength) * 2.5;
-                let barHeight;
-                let x = 0;
-
-                for (let i = 0; i < bufferLength; i++) {
-                    barHeight = dataArray[i] / 2;
-                    visualizerCtx.fillStyle = `rgb(253, 187, 45)`;
-                    visualizerCtx.fillRect(x, visualizerCanvas.height - barHeight, barWidth, barHeight);
-                    x += barWidth + 1;
-                }
-            }
-            draw();
-        }
-        
-        function stopVisualizer() {
-            cancelAnimationFrame(animationFrameId);
-            visualizerCtx.clearRect(0, 0, visualizerCanvas.width, visualizerCanvas.height);
-            visualizerCanvas.style.display = 'none';
-        }
+document.addEventListener('DOMContentLoaded', () => {
 
 
-        // --- Event Listeners ---
-        captureBtn.addEventListener('click', () => {
-            canvas.width = video.videoWidth;
-            canvas.height = video.videoHeight;
-            canvas.getContext('2d').drawImage(video, 0, 0, canvas.width, canvas.height);
-            capturedImageDataURL = canvas.toDataURL('image/png');
-            
-            // Show preview and hide video
-            imagePreview.src = capturedImageDataURL;
-            imagePreview.style.display = 'block';
-            video.style.display = 'none';
+    /* =====================================================
+       ELEMENT REFERENCES
+    ===================================================== */
 
-            // Toggle buttons
-            captureBtn.style.display = 'none';
-            recaptureBtn.style.display = 'block';
-        });
-        
-        recaptureBtn.addEventListener('click', () => {
-            capturedImageDataURL = null;
-            
-            // Show video and hide preview
-            video.style.display = 'block';
-            imagePreview.style.display = 'none';
+    const loadingDiv =
+        document.getElementById('loading');
 
-            // Toggle buttons
-            recaptureBtn.style.display = 'none';
-            captureBtn.style.display = 'block';
-        });
+    const reportForm =
+        document.getElementById('report-form');
 
-        recordBtn.addEventListener('click', () => {
-            mediaRecorder.start();
-            startVisualizer();
-            recordBtn.disabled = true;
-            stopBtn.disabled = false;
-        });
+    const video =
+        document.getElementById('camera-feed');
 
-        stopBtn.addEventListener('click', () => {
-            mediaRecorder.stop();
-            recordBtn.disabled = false;
-            stopBtn.disabled = true;
-        });
+    const imagePreview =
+        document.getElementById('image-preview');
 
-        submitBtn.addEventListener('click', async () => {
-            if (!capturedImageDataURL) {
-                alert('Please capture an image first.');
-                return;
-            }
+    const canvas =
+        document.createElement('canvas');
 
-            statusDiv.innerHTML = `<div class="spinner-border text-primary" role="status"></div> <p>Submitting... Please wait.</p>`;
-            statusDiv.style.display = 'block';
-            submitBtn.disabled = true;
+    const captureBtn =
+        document.getElementById('capture-btn');
 
-            const payload = {
-                ...userLocation,
-                image_data_url: capturedImageDataURL,
-                description: descriptionInput.value
+    const recaptureBtn =
+        document.getElementById('recapture-btn');
+
+    const submitBtn =
+        document.getElementById('submit-issue-btn');
+
+    const descriptionInput =
+        document.getElementById('description');
+
+    const statusDiv =
+        document.getElementById('submission-status');
+
+    const captureSuccess =
+        document.getElementById('capture-success');
+
+
+    /* Voice */
+
+    const recordBtn =
+        document.getElementById('record-btn');
+
+    const stopBtn =
+        document.getElementById('stop-btn');
+
+    const audioPlayback =
+        document.getElementById('audio-playback');
+
+    const visualizerCanvas =
+        document.getElementById('voice-visualizer');
+
+    const visualizerCtx =
+        visualizerCanvas.getContext('2d');
+
+
+    /* =====================================================
+       STATE
+    ===================================================== */
+
+    let capturedImageDataURL = null;
+
+    let recordedAudioBlob = null;
+
+    let mediaRecorder;
+
+    let audioChunks = [];
+
+    let userLocation = {};
+
+    let audioContext;
+
+    let analyser;
+
+    let source;
+
+    let animationFrameId;
+
+
+    /* =====================================================
+       CAMERA + LOCATION
+       BACKEND FLOW SAME
+    ===================================================== */
+
+    async function setupCameraAndLocation() {
+
+        loadingDiv.style.display = 'block';
+
+        try {
+
+
+            /* Get Location */
+
+            const position =
+                await new Promise(
+                    (resolve, reject) => {
+
+                        navigator.geolocation.getCurrentPosition(
+
+                            resolve,
+
+                            reject,
+
+                            {
+                                enableHighAccuracy: true,
+                                timeout: 10000,
+                                maximumAge: 0
+                            }
+
+                        );
+
+                    }
+                );
+
+
+            userLocation = {
+
+                latitude:
+                    position.coords.latitude,
+
+                longitude:
+                    position.coords.longitude
+
             };
 
-            if (recordedAudioBlob) {
-                payload.voice_data_url = await new Promise(resolve => {
-                    const reader = new FileReader();
-                    reader.onloadend = () => resolve(reader.result);
-                    reader.readAsDataURL(recordedAudioBlob);
+
+
+            /* Camera + Microphone */
+
+            const stream =
+                await navigator.mediaDevices.getUserMedia({
+
+                    video: {
+                        facingMode: 'environment'
+                    },
+
+                    audio: true
+
                 });
+
+
+            video.srcObject = stream;
+
+
+
+            /* Media Recorder */
+
+            mediaRecorder =
+                new MediaRecorder(stream);
+
+
+            mediaRecorder.ondataavailable =
+                e => {
+
+                    audioChunks.push(e.data);
+
+                };
+
+
+            mediaRecorder.onstop =
+                () => {
+
+
+                    recordedAudioBlob =
+                        new Blob(
+
+                            audioChunks,
+
+                            {
+                                type:
+                                    'audio/webm; codecs=opus'
+                            }
+
+                        );
+
+
+                    audioChunks = [];
+
+
+                    const audioURL =
+                        window.URL.createObjectURL(
+                            recordedAudioBlob
+                        );
+
+
+                    audioPlayback.src =
+                        audioURL;
+
+
+                    audioPlayback.style.display =
+                        'block';
+
+
+                    stopVisualizer();
+
+                };
+
+
+
+            /* Audio Visualizer */
+
+            audioContext =
+                new (
+                    window.AudioContext ||
+                    window.webkitAudioContext
+                )();
+
+
+            analyser =
+                audioContext.createAnalyser();
+
+
+            source =
+                audioContext.createMediaStreamSource(
+                    stream
+                );
+
+
+            source.connect(analyser);
+
+
+
+            /* Show form */
+
+            reportForm.style.display =
+                'block';
+
+
+        }
+
+        catch (err) {
+
+
+            console.error(
+                "Error accessing media devices or location.",
+                err
+            );
+
+
+            statusDiv.innerHTML = `
+
+                <div
+                    style="
+                        padding:18px;
+                        border-radius:14px;
+                        background:rgba(239,68,68,0.08);
+                        color:#dc2626;
+                    "
+                >
+
+                    <i class="fas fa-circle-exclamation"></i>
+
+                    Could not access camera or location.
+                    Please grant permissions and refresh.
+
+                </div>
+
+            `;
+
+
+            statusDiv.style.display =
+                'block';
+
+
+        }
+
+        finally {
+
+
+            loadingDiv.style.display =
+                'none';
+
+        }
+
+    }
+
+
+
+    /* =====================================================
+       AUDIO VISUALIZER
+    ===================================================== */
+
+    function startVisualizer() {
+
+
+        visualizerCanvas.style.display =
+            'block';
+
+
+        analyser.fftSize =
+            256;
+
+
+        const bufferLength =
+            analyser.frequencyBinCount;
+
+
+        const dataArray =
+            new Uint8Array(
+                bufferLength
+            );
+
+
+        function draw() {
+
+
+            animationFrameId =
+                requestAnimationFrame(
+                    draw
+                );
+
+
+            analyser.getByteFrequencyData(
+                dataArray
+            );
+
+
+            visualizerCtx.fillStyle =
+                '#0f172a';
+
+
+            visualizerCtx.fillRect(
+
+                0,
+
+                0,
+
+                visualizerCanvas.width,
+
+                visualizerCanvas.height
+
+            );
+
+
+            const barWidth =
+                (
+                    visualizerCanvas.width /
+                    bufferLength
+                ) * 2.5;
+
+
+            let x = 0;
+
+
+            for (
+                let i = 0;
+                i < bufferLength;
+                i++
+            ) {
+
+
+                const barHeight =
+                    dataArray[i] / 2;
+
+
+                visualizerCtx.fillStyle =
+                    '#8b5cf6';
+
+
+                visualizerCtx.fillRect(
+
+                    x,
+
+                    visualizerCanvas.height -
+                    barHeight,
+
+                    barWidth,
+
+                    barHeight
+
+                );
+
+
+                x +=
+                    barWidth + 1;
+
             }
+
+        }
+
+
+        draw();
+
+    }
+
+
+
+    function stopVisualizer() {
+
+
+        cancelAnimationFrame(
+            animationFrameId
+        );
+
+
+        visualizerCtx.clearRect(
+
+            0,
+
+            0,
+
+            visualizerCanvas.width,
+
+            visualizerCanvas.height
+
+        );
+
+
+        visualizerCanvas.style.display =
+            'none';
+
+    }
+
+
+
+    /* =====================================================
+       CAPTURE IMAGE
+    ===================================================== */
+
+    captureBtn.addEventListener(
+        'click',
+        () => {
+
+
+            canvas.width =
+                video.videoWidth;
+
+
+            canvas.height =
+                video.videoHeight;
+
+
+            canvas
+                .getContext('2d')
+                .drawImage(
+
+                    video,
+
+                    0,
+
+                    0,
+
+                    canvas.width,
+
+                    canvas.height
+
+                );
+
+
+            capturedImageDataURL =
+                canvas.toDataURL(
+                    'image/png'
+                );
+
+
+
+            imagePreview.src =
+                capturedImageDataURL;
+
+
+            imagePreview.style.display =
+                'block';
+
+
+            video.style.display =
+                'none';
+
+
+            captureBtn.style.display =
+                'none';
+
+
+            recaptureBtn.style.display =
+                'block';
+
+
+            captureSuccess.style.display =
+                'flex';
+
+
+        }
+    );
+
+
+
+    /* =====================================================
+       RECAPTURE
+    ===================================================== */
+
+    recaptureBtn.addEventListener(
+        'click',
+        () => {
+
+
+            capturedImageDataURL =
+                null;
+
+
+            video.style.display =
+                'block';
+
+
+            imagePreview.style.display =
+                'none';
+
+
+            captureBtn.style.display =
+                'block';
+
+
+            recaptureBtn.style.display =
+                'none';
+
+
+            captureSuccess.style.display =
+                'none';
+
+        }
+    );
+
+
+
+    /* =====================================================
+       VOICE RECORDING
+    ===================================================== */
+
+    recordBtn.addEventListener(
+        'click',
+        () => {
+
+
+            if (
+                audioContext &&
+                audioContext.state ===
+                'suspended'
+            ) {
+
+                audioContext.resume();
+
+            }
+
+
+            mediaRecorder.start();
+
+
+            startVisualizer();
+
+
+            recordBtn.disabled =
+                true;
+
+
+            stopBtn.disabled =
+                false;
+
+        }
+    );
+
+
+
+    stopBtn.addEventListener(
+        'click',
+        () => {
+
+
+            mediaRecorder.stop();
+
+
+            recordBtn.disabled =
+                false;
+
+
+            stopBtn.disabled =
+                true;
+
+        }
+    );
+
+
+
+    /* =====================================================
+       SUBMIT ISSUE
+       SAME API + SAME PAYLOAD
+    ===================================================== */
+
+    submitBtn.addEventListener(
+        'click',
+        async () => {
+
+
+            if (
+                !capturedImageDataURL
+            ) {
+
+
+                alert(
+                    'Please capture an image first.'
+                );
+
+
+                return;
+
+            }
+
+
+
+            statusDiv.innerHTML = `
+
+                <div
+                    style="
+                        color:#4f46e5;
+                    "
+                >
+
+                    <div
+                        class="spinner-border spinner-border-sm"
+                        role="status"
+                    ></div>
+
+                    <span
+                        style="
+                            margin-left:8px;
+                        "
+                    >
+
+                        Submitting your report...
+
+                    </span>
+
+                </div>
+
+            `;
+
+
+            statusDiv.style.display =
+                'block';
+
+
+            submitBtn.disabled =
+                true;
+
+
+
+            const payload = {
+
+                ...userLocation,
+
+                image_data_url:
+                    capturedImageDataURL,
+
+                description:
+                    descriptionInput.value
+
+            };
+
+
+
+            if (
+                recordedAudioBlob
+            ) {
+
+
+                payload.voice_data_url =
+                    await new Promise(
+                        resolve => {
+
+
+                            const reader =
+                                new FileReader();
+
+
+                            reader.onloadend =
+                                () =>
+
+                                resolve(
+                                    reader.result
+                                );
+
+
+                            reader.readAsDataURL(
+                                recordedAudioBlob
+                            );
+
+                        }
+                    );
+
+            }
+
+
 
             try {
-                const response = await fetch('/submit_issue', {
-                    method: 'POST',
-                    headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify(payload)
-                });
-                const result = await response.json();
 
-                if (response.ok) {
-                    if (result.duplicate) {
-                        statusDiv.innerHTML = `<p class="text-warning">This issue seems to be a duplicate. Redirecting you...</p>`;
-                        window.location.href = `/issue/${result.issue_id}`;
-                    } else {
-                        statusDiv.innerHTML = `<p class="text-success">${result.message}</p>`;
-                        setTimeout(() => window.location.href = '/dashboard', 2000);
+
+                const response =
+                    await fetch(
+
+                        '/submit_issue',
+
+                        {
+
+                            method:
+                                'POST',
+
+                            headers: {
+
+                                'Content-Type':
+                                    'application/json'
+
+                            },
+
+                            body:
+                                JSON.stringify(
+                                    payload
+                                )
+
+                        }
+
+                    );
+
+
+                const result =
+                    await response.json();
+
+
+
+                if (
+                    response.ok
+                ) {
+
+
+                    if (
+                        result.duplicate
+                    ) {
+
+
+                        statusDiv.innerHTML = `
+
+                            <div
+                                style="
+                                    padding:14px;
+                                    border-radius:12px;
+                                    background:rgba(245,158,11,0.1);
+                                    color:#b45309;
+                                "
+                            >
+
+                                <i class="fas fa-triangle-exclamation"></i>
+
+                                This issue seems to be a duplicate.
+                                Redirecting you...
+
+                            </div>
+
+                        `;
+
+
+                        window.location.href =
+                            `/issue/${result.issue_id}`;
+
+
                     }
-                } else {
-                    throw new Error(result.error || 'Submission failed');
-                }
-            } catch (error) {
-                console.error('Submission error:', error);
-                statusDiv.innerHTML = `<p class="text-danger">Error: ${error.message}</p>`;
-                submitBtn.disabled = false;
-            }
-        });
 
-        // --- Initialisation ---
-        setupCameraAndLocation();
-    });
+                    else {
+
+
+                        statusDiv.innerHTML = `
+
+                            <div
+                                style="
+                                    padding:14px;
+                                    border-radius:12px;
+                                    background:rgba(16,185,129,0.1);
+                                    color:#047857;
+                                "
+                            >
+
+                                <i class="fas fa-circle-check"></i>
+
+                                ${result.message}
+
+                            </div>
+
+                        `;
+
+
+                        setTimeout(
+
+                            () => {
+
+                                window.location.href =
+                                    '/dashboard';
+
+                            },
+
+                            2000
+
+                        );
+
+                    }
+
+                }
+
+                else {
+
+
+                    throw new Error(
+
+                        result.error ||
+                        'Submission failed'
+
+                    );
+
+                }
+
+            }
+
+            catch (error) {
+
+
+                console.error(
+                    'Submission error:',
+                    error
+                );
+
+
+                statusDiv.innerHTML = `
+
+                    <div
+                        style="
+                            padding:14px;
+                            border-radius:12px;
+                            background:rgba(239,68,68,0.08);
+                            color:#dc2626;
+                        "
+                    >
+
+                        <i class="fas fa-circle-xmark"></i>
+
+                        Error:
+                        ${error.message}
+
+                    </div>
+
+                `;
+
+
+                submitBtn.disabled =
+                    false;
+
+            }
+
+        }
+    );
+
+
+
+    /* =====================================================
+       INITIALISE
+    ===================================================== */
+
+    setupCameraAndLocation();
+
+
+});
+
 </script>
+
 {% endblock %}

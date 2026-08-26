@@ -1,63 +1,1875 @@
 {% extends 'base.html' %}
+
 {% block title %}Darpan - A Clearer View of Your Community{% endblock %}
 
 {% block content %}
-<div class="container">
-    <div class="row min-vh-50 align-items-center text-center text-md-start py-5">
-        <div class="col-md-6">
-            <h1 class="display-4 fw-bold">A Clearer View of Your Community.</h1>
-            <p class="lead my-4 text-secondary">
-                Darpan is the official platform for citizens of Greater Noida to report civic issues like potholes and garbage, ensuring swift action and transparent tracking.
-            </p>
-            <a href="{{ url_for('report_issue_page') }}" class="btn btn-primary btn-lg">Report an Issue Now</a>
-            <a href="{{ url_for('user_dashboard') }}" class="btn btn-outline-secondary btn-lg ms-2">View Dashboard</a>
-        </div>
-        <div class="col-md-6 text-center d-none d-md-block">
-            <img src="https://storage.googleapis.com/gemini-prod-us-west1-assets/images/google_search_sge_images/community.png" class="img-fluid" alt="Community Illustration">
-        </div>
-    </div>
 
-    <div class="py-5">
-        <h2 class="text-center fw-bold mb-5">How It Works</h2>
-        <div class="row g-4 text-center">
-            <div class="col-md-4">
-                <div class="card p-4 h-100">
-                    <div class="feature-icon bg-primary text-white fs-2 mb-3 mx-auto">
-                       <i class="fas fa-camera"></i>
+<div class="darpan-home">
+
+    <!-- HERO SECTION -->
+    <section class="hero-section">
+        <div class="hero-glow glow-1"></div>
+        <div class="hero-glow glow-2"></div>
+        <div class="hero-grid"></div>
+
+        <div class="container position-relative">
+            <div class="row align-items-center min-vh-75">
+
+                <!-- LEFT CONTENT -->
+                <div class="col-lg-6 hero-content">
+
+                    <div class="hero-badge">
+                        <span class="badge-dot"></span>
+                        <span>Smart Civic Reporting Platform</span>
                     </div>
-                    <h4 class="fw-bold">1. Identify & Report</h4>
-                    <p class="text-secondary">Capture a photo of an issue. Our AI instantly categorizes it and tags the location automatically.</p>
-                </div>
-            </div>
-            <div class="col-md-4">
-                 <div class="card p-4 h-100">
-                     <div class="feature-icon bg-primary text-white fs-2 mb-3 mx-auto">
-                        <i class="fas fa-tasks"></i>
+
+                    <h1 class="hero-title">
+                        A Better City
+                        <span class="gradient-text">Starts With You.</span>
+                    </h1>
+
+                    <p class="hero-description">
+                        See a problem. Report it instantly. Track every update.
+                        Darpan connects citizens with civic authorities to build a
+                        cleaner, safer and more accountable Greater Noida.
+                    </p>
+
+                    <div class="hero-actions">
+                        <a href="{{ url_for('report_issue_page') }}"
+                           class="btn-report">
+
+                            <span class="btn-icon">
+                                <i class="fas fa-plus"></i>
+                            </span>
+
+                            <span>
+                                <strong>Report an Issue</strong>
+                                <small>Make your city better</small>
+                            </span>
+
+                            <i class="fas fa-arrow-right arrow-icon"></i>
+                        </a>
+
+                        <a href="{{ url_for('user_dashboard') }}"
+                           class="btn-dashboard">
+                            <i class="fas fa-chart-line"></i>
+                            Explore Dashboard
+                        </a>
                     </div>
-                    <h4 class="fw-bold">2. Track Progress</h4>
-                    <p class="text-secondary">View all active issues on a live map and get real-time status updates as authorities take action.</p>
-                </div>
-            </div>
-            <div class="col-md-4">
-                 <div class="card p-4 h-100">
-                     <div class="feature-icon bg-primary text-white fs-2 mb-3 mx-auto">
-                        <i class="fas fa-check-circle"></i>
+
+                    <div class="hero-trust">
+
+                        <div class="trust-item">
+                            <div class="trust-icon purple">
+                                <i class="fas fa-bolt"></i>
+                            </div>
+                            <div>
+                                <strong>Instant Reporting</strong>
+                                <span>Report in seconds</span>
+                            </div>
+                        </div>
+
+                        <div class="trust-line"></div>
+
+                        <div class="trust-item">
+                            <div class="trust-icon blue">
+                                <i class="fas fa-location-dot"></i>
+                            </div>
+                            <div>
+                                <strong>Live Tracking</strong>
+                                <span>Follow every update</span>
+                            </div>
+                        </div>
+
                     </div>
-                    <h4 class="fw-bold">3. Confirm Resolution</h4>
-                    <p class="text-secondary">Once work is complete, you get notified. Mark the issue as resolved to help keep our city accountable.</p>
+
                 </div>
+
+
+                <!-- RIGHT VISUAL -->
+                <div class="col-lg-6 hero-visual">
+
+                    <div class="city-scene">
+
+                        <!-- floating cards -->
+
+                        <div class="floating-card issue-card pothole-card">
+                            <div class="floating-icon orange">
+                                <i class="fas fa-triangle-exclamation"></i>
+                            </div>
+
+                            <div>
+                                <strong>Pothole Reported</strong>
+                                <span>Sector 18, Greater Noida</span>
+                            </div>
+
+                            <div class="status-dot"></div>
+                        </div>
+
+
+                        <div class="floating-card issue-card garbage-card">
+                            <div class="floating-icon green">
+                                <i class="fas fa-trash"></i>
+                            </div>
+
+                            <div>
+                                <strong>Issue Resolved</strong>
+                                <span>Action completed</span>
+                            </div>
+
+                            <i class="fas fa-check-circle success-check"></i>
+                        </div>
+
+
+                        <!-- MAIN CITY CARD -->
+                        <div class="city-card">
+
+                            <div class="city-card-header">
+
+                                <div>
+                                    <span class="small-label">
+                                        LIVE CITY OVERVIEW
+                                    </span>
+
+                                    <h3>Greater Noida</h3>
+                                </div>
+
+                                <div class="live-status">
+                                    <span></span>
+                                    LIVE
+                                </div>
+
+                            </div>
+
+
+                            <!-- MAP -->
+                            <div class="mini-map">
+
+                                <div class="map-road road-one"></div>
+                                <div class="map-road road-two"></div>
+                                <div class="map-road road-three"></div>
+
+                                <div class="map-building building-1"></div>
+                                <div class="map-building building-2"></div>
+                                <div class="map-building building-3"></div>
+                                <div class="map-building building-4"></div>
+                                <div class="map-building building-5"></div>
+                                <div class="map-building building-6"></div>
+
+                                <div class="map-marker marker-1">
+                                    <i class="fas fa-triangle-exclamation"></i>
+                                </div>
+
+                                <div class="map-marker marker-2">
+                                    <i class="fas fa-trash"></i>
+                                </div>
+
+                                <div class="map-marker marker-3">
+                                    <i class="fas fa-lightbulb"></i>
+                                </div>
+
+                                <div class="map-location">
+                                    <span class="location-pulse"></span>
+                                    <i class="fas fa-location-arrow"></i>
+                                </div>
+
+                            </div>
+
+
+                            <!-- STATS -->
+                            <div class="city-stats">
+
+                                <div class="city-stat">
+                                    <div class="stat-top">
+                                        <div class="stat-icon purple-bg">
+                                            <i class="fas fa-layer-group"></i>
+                                        </div>
+
+                                        <span class="stat-number">24</span>
+                                    </div>
+
+                                    <span>Total Issues</span>
+                                </div>
+
+
+                                <div class="city-stat">
+                                    <div class="stat-top">
+                                        <div class="stat-icon orange-bg">
+                                            <i class="fas fa-clock"></i>
+                                        </div>
+
+                                        <span class="stat-number">08</span>
+                                    </div>
+
+                                    <span>In Progress</span>
+                                </div>
+
+
+                                <div class="city-stat">
+                                    <div class="stat-top">
+                                        <div class="stat-icon green-bg">
+                                            <i class="fas fa-check"></i>
+                                        </div>
+
+                                        <span class="stat-number">16</span>
+                                    </div>
+
+                                    <span>Resolved</span>
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- DECORATIVE ORBITS -->
+                        <div class="orbit orbit-one"></div>
+                        <div class="orbit orbit-two"></div>
+
+                        <div class="hero-orb orb-purple"></div>
+                        <div class="hero-orb orb-blue"></div>
+
+                    </div>
+
+                </div>
+
             </div>
         </div>
-    </div>
+    </section>
+
+
+    <!-- QUICK STATS -->
+    <section class="quick-stats-section">
+
+        <div class="container">
+
+            <div class="quick-stats">
+
+                <div class="quick-stat">
+                    <div class="quick-stat-icon purple-bg">
+                        <i class="fas fa-users"></i>
+                    </div>
+
+                    <div>
+                        <strong>Citizen Powered</strong>
+                        <span>Your reports create change</span>
+                    </div>
+                </div>
+
+
+                <div class="quick-divider"></div>
+
+
+                <div class="quick-stat">
+                    <div class="quick-stat-icon orange-bg">
+                        <i class="fas fa-bolt"></i>
+                    </div>
+
+                    <div>
+                        <strong>Faster Action</strong>
+                        <span>Issues reach authorities quickly</span>
+                    </div>
+                </div>
+
+
+                <div class="quick-divider"></div>
+
+
+                <div class="quick-stat">
+                    <div class="quick-stat-icon green-bg">
+                        <i class="fas fa-shield-heart"></i>
+                    </div>
+
+                    <div>
+                        <strong>Transparent Progress</strong>
+                        <span>Track every issue in real time</span>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+
+    <!-- HOW IT WORKS -->
+    <section class="how-section">
+
+        <div class="container">
+
+            <div class="section-heading text-center">
+
+                <div class="section-tag">
+                    <i class="fas fa-sparkles"></i>
+                    SIMPLE & POWERFUL
+                </div>
+
+                <h2>From Problem to <span>Progress.</span></h2>
+
+                <p>
+                    Reporting a civic issue should be simple. Darpan makes the
+                    entire process fast, transparent and easy to follow.
+                </p>
+
+            </div>
+
+
+            <div class="row g-4 process-row">
+
+
+                <!-- STEP 1 -->
+                <div class="col-md-4">
+
+                    <div class="process-card">
+
+                        <div class="step-number">01</div>
+
+                        <div class="process-icon icon-purple">
+                            <i class="fas fa-camera"></i>
+                        </div>
+
+                        <h3>Identify & Report</h3>
+
+                        <p>
+                            Capture a photo and describe the issue.
+                            Your report is submitted directly through Darpan.
+                        </p>
+
+                        <div class="process-line"></div>
+
+                        <span class="process-link">
+                            Capture the problem
+                            <i class="fas fa-arrow-right"></i>
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+                <!-- STEP 2 -->
+                <div class="col-md-4">
+
+                    <div class="process-card featured-card">
+
+                        <div class="featured-badge">
+                            MOST IMPORTANT
+                        </div>
+
+                        <div class="step-number">02</div>
+
+                        <div class="process-icon icon-blue">
+                            <i class="fas fa-map-location-dot"></i>
+                        </div>
+
+                        <h3>Track Progress</h3>
+
+                        <p>
+                            Monitor your reported issue and see real-time
+                            updates as it moves toward resolution.
+                        </p>
+
+                        <div class="process-line"></div>
+
+                        <span class="process-link">
+                            Follow the journey
+                            <i class="fas fa-arrow-right"></i>
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+                <!-- STEP 3 -->
+                <div class="col-md-4">
+
+                    <div class="process-card">
+
+                        <div class="step-number">03</div>
+
+                        <div class="process-icon icon-green">
+                            <i class="fas fa-circle-check"></i>
+                        </div>
+
+                        <h3>See Real Change</h3>
+
+                        <p>
+                            Once authorities complete the work, the issue
+                            status is updated so everyone can see the progress.
+                        </p>
+
+                        <div class="process-line"></div>
+
+                        <span class="process-link">
+                            Confirm resolution
+                            <i class="fas fa-arrow-right"></i>
+                        </span>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+
+    <!-- CTA SECTION -->
+    <section class="cta-section">
+
+        <div class="container">
+
+            <div class="cta-box">
+
+                <div class="cta-glow cta-glow-one"></div>
+                <div class="cta-glow cta-glow-two"></div>
+
+                <div class="row align-items-center position-relative">
+
+                    <div class="col-lg-8">
+
+                        <div class="cta-tag">
+                            <span></span>
+                            YOUR CITY. YOUR VOICE.
+                        </div>
+
+                        <h2>
+                            See something that
+                            <span>needs attention?</span>
+                        </h2>
+
+                        <p>
+                            Don't wait for someone else to report it.
+                            Take a photo, submit the issue and help make
+                            Greater Noida better.
+                        </p>
+
+                    </div>
+
+
+                    <div class="col-lg-4 text-lg-end">
+
+                        <a href="{{ url_for('report_issue_page') }}"
+                           class="cta-button">
+
+                            <span>
+                                Report an Issue
+                                <small>It only takes a minute</small>
+                            </span>
+
+                            <i class="fas fa-arrow-right"></i>
+
+                        </a>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
 </div>
+
+
 <style>
-.feature-icon {
-    width: 70px;
-    height: 70px;
-    border-radius: 15px;
+
+/* =========================================
+   DARPAN HOME PAGE
+========================================= */
+
+.darpan-home {
+    overflow: hidden;
+    color: #172033;
+}
+
+
+/* HERO */
+
+.hero-section {
+    min-height: 760px;
+    position: relative;
+    overflow: hidden;
+    padding: 70px 0 80px;
+    background:
+        radial-gradient(circle at 15% 20%, rgba(108, 60, 255, 0.16), transparent 30%),
+        radial-gradient(circle at 85% 60%, rgba(53, 111, 255, 0.13), transparent 35%),
+        linear-gradient(135deg, #f8f9ff 0%, #f3f5ff 48%, #f8fbff 100%);
+}
+
+.hero-grid {
+    position: absolute;
+    inset: 0;
+    opacity: 0.35;
+    background-image:
+        linear-gradient(rgba(89, 70, 190, 0.06) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(89, 70, 190, 0.06) 1px, transparent 1px);
+    background-size: 50px 50px;
+}
+
+.hero-glow {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(90px);
+    pointer-events: none;
+}
+
+.glow-1 {
+    width: 350px;
+    height: 350px;
+    top: -100px;
+    left: -100px;
+    background: rgba(102, 70, 255, 0.18);
+}
+
+.glow-2 {
+    width: 450px;
+    height: 450px;
+    bottom: -180px;
+    right: -100px;
+    background: rgba(0, 123, 255, 0.12);
+}
+
+.min-vh-75 {
+    min-height: 680px;
+}
+
+
+/* HERO LEFT */
+
+.hero-content {
+    position: relative;
+    z-index: 2;
+}
+
+.hero-badge {
+    width: fit-content;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    padding: 10px 17px;
+
+    background: rgba(255,255,255,0.75);
+    border: 1px solid rgba(113, 93, 255, 0.18);
+    border-radius: 50px;
+
+    box-shadow: 0 8px 30px rgba(57, 48, 130, 0.06);
+
+    color: #5c6280;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.3px;
+
+    margin-bottom: 28px;
+}
+
+.badge-dot {
+    width: 8px;
+    height: 8px;
+    background: #6d4aff;
+    border-radius: 50%;
+    box-shadow: 0 0 0 5px rgba(109, 74, 255, 0.12);
+}
+
+.hero-title {
+    font-size: clamp(3.3rem, 6vw, 5.7rem);
+    line-height: 1.02;
+    letter-spacing: -3px;
+    font-weight: 800;
+    margin-bottom: 28px;
+    color: #182033;
+}
+
+.gradient-text {
+    display: block;
+    background: linear-gradient(135deg, #633cff, #7c55ff, #276cff);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.hero-description {
+    max-width: 600px;
+    font-size: 18px;
+    line-height: 1.8;
+    color: #687086;
+    margin-bottom: 34px;
+}
+
+
+/* HERO BUTTONS */
+
+.hero-actions {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 15px;
+    margin-bottom: 42px;
+}
+
+.btn-report {
+    display: inline-flex;
+    align-items: center;
+    gap: 13px;
+
+    text-decoration: none;
+    color: white;
+
+    padding: 12px 18px 12px 12px;
+
+    border-radius: 18px;
+
+    background: linear-gradient(135deg, #5f35f4, #754cff);
+
+    box-shadow:
+        0 15px 35px rgba(95, 53, 244, 0.3);
+
+    transition: 0.3s ease;
+}
+
+.btn-report:hover {
+    transform: translateY(-4px);
+    color: white;
+    box-shadow:
+        0 20px 45px rgba(95, 53, 244, 0.4);
+}
+
+.btn-icon {
+    width: 48px;
+    height: 48px;
+
     display: flex;
     align-items: center;
     justify-content: center;
+
+    border-radius: 14px;
+
+    background: rgba(255,255,255,0.18);
 }
+
+.btn-report span:nth-child(2) {
+    display: flex;
+    flex-direction: column;
+}
+
+.btn-report strong {
+    font-size: 15px;
+}
+
+.btn-report small {
+    opacity: 0.75;
+    font-size: 11px;
+}
+
+.arrow-icon {
+    margin-left: 5px;
+    transition: 0.3s;
+}
+
+.btn-report:hover .arrow-icon {
+    transform: translateX(5px);
+}
+
+.btn-dashboard {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+
+    padding: 18px 22px;
+
+    border: 1px solid #dce0ee;
+    border-radius: 15px;
+
+    text-decoration: none;
+
+    color: #4e566a;
+    background: rgba(255,255,255,0.7);
+
+    font-weight: 700;
+
+    transition: 0.3s;
+}
+
+.btn-dashboard:hover {
+    background: white;
+    color: #613cff;
+    border-color: #b8a9ff;
+    transform: translateY(-3px);
+}
+
+
+/* TRUST */
+
+.hero-trust {
+    display: flex;
+    align-items: center;
+    gap: 25px;
+}
+
+.trust-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.trust-icon {
+    width: 46px;
+    height: 46px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 14px;
+}
+
+.trust-icon.purple {
+    background: rgba(108, 74, 255, 0.1);
+    color: #6844ff;
+}
+
+.trust-icon.blue {
+    background: rgba(40, 105, 255, 0.1);
+    color: #2869ff;
+}
+
+.trust-item div:last-child {
+    display: flex;
+    flex-direction: column;
+}
+
+.trust-item strong {
+    font-size: 14px;
+}
+
+.trust-item span {
+    font-size: 12px;
+    color: #8a91a3;
+}
+
+.trust-line {
+    width: 1px;
+    height: 40px;
+    background: #dfe3ee;
+}
+
+
+/* HERO VISUAL */
+
+.hero-visual {
+    position: relative;
+    z-index: 2;
+}
+
+.city-scene {
+    position: relative;
+    width: 100%;
+    min-height: 580px;
+}
+
+
+/* MAIN CITY CARD */
+
+.city-card {
+    position: absolute;
+    width: min(100%, 530px);
+
+    right: 0;
+    top: 55px;
+
+    padding: 25px;
+
+    border-radius: 30px;
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(24, 31, 64, 0.98),
+            rgba(35, 30, 83, 0.98)
+        );
+
+    box-shadow:
+        0 35px 90px rgba(33, 22, 100, 0.3);
+
+    border: 1px solid rgba(255,255,255,0.1);
+
+    transform: rotate(-2deg);
+
+    overflow: hidden;
+}
+
+.city-card::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(123, 87, 255, 0.1),
+            transparent 50%
+        );
+
+    pointer-events: none;
+}
+
+.city-card-header {
+    position: relative;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    margin-bottom: 22px;
+
+    color: white;
+}
+
+.small-label {
+    font-size: 10px;
+    letter-spacing: 1.5px;
+    color: #9691ba;
+    font-weight: 700;
+}
+
+.city-card h3 {
+    margin: 5px 0 0;
+    font-size: 24px;
+}
+
+.live-status {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+
+    padding: 8px 12px;
+
+    font-size: 10px;
+    font-weight: 800;
+
+    border-radius: 30px;
+
+    color: #8df3c0;
+    background: rgba(59, 203, 128, 0.1);
+}
+
+.live-status span {
+    width: 7px;
+    height: 7px;
+
+    border-radius: 50%;
+    background: #4fe293;
+
+    box-shadow: 0 0 12px #4fe293;
+}
+
+
+/* MAP */
+
+.mini-map {
+    position: relative;
+    height: 275px;
+
+    overflow: hidden;
+
+    border-radius: 22px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #2a3169,
+            #1d2452
+        );
+
+    border: 1px solid rgba(255,255,255,0.08);
+}
+
+.mini-map::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+
+    background:
+        radial-gradient(
+            circle at 30% 30%,
+            rgba(116, 91, 255, 0.35),
+            transparent 35%
+        ),
+        radial-gradient(
+            circle at 75% 70%,
+            rgba(37, 100, 255, 0.25),
+            transparent 40%
+        );
+}
+
+
+/* MAP ROADS */
+
+.map-road {
+    position: absolute;
+    background: rgba(141, 151, 255, 0.22);
+    box-shadow: 0 0 18px rgba(126, 92, 255, 0.18);
+}
+
+.road-one {
+    width: 130%;
+    height: 38px;
+
+    top: 45%;
+    left: -15%;
+
+    transform: rotate(22deg);
+}
+
+.road-two {
+    width: 140%;
+    height: 30px;
+
+    top: 58%;
+    left: -20%;
+
+    transform: rotate(-30deg);
+}
+
+.road-three {
+    width: 35px;
+    height: 130%;
+
+    top: -15%;
+    left: 55%;
+
+    transform: rotate(18deg);
+}
+
+
+/* BUILDINGS */
+
+.map-building {
+    position: absolute;
+
+    border-radius: 8px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #49549a,
+            #252b63
+        );
+
+    box-shadow:
+        12px 12px 0 rgba(11, 14, 45, 0.25);
+}
+
+.building-1 {
+    width: 70px;
+    height: 90px;
+    top: 35px;
+    left: 45px;
+}
+
+.building-2 {
+    width: 80px;
+    height: 60px;
+    top: 40px;
+    right: 65px;
+}
+
+.building-3 {
+    width: 90px;
+    height: 65px;
+    bottom: 35px;
+    left: 60px;
+}
+
+.building-4 {
+    width: 55px;
+    height: 95px;
+    bottom: 25px;
+    right: 55px;
+}
+
+.building-5 {
+    width: 55px;
+    height: 55px;
+    top: 110px;
+    left: 180px;
+}
+
+.building-6 {
+    width: 70px;
+    height: 70px;
+    bottom: 55px;
+    right: 190px;
+}
+
+
+/* MAP MARKERS */
+
+.map-marker {
+    position: absolute;
+
+    width: 45px;
+    height: 45px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 15px;
+
+    color: white;
+
+    z-index: 4;
+
+    box-shadow: 0 12px 25px rgba(0,0,0,0.3);
+}
+
+.marker-1 {
+    top: 65px;
+    left: 48%;
+
+    background: linear-gradient(135deg, #ff6b3d, #ff3e30);
+}
+
+.marker-2 {
+    bottom: 45px;
+    left: 32%;
+
+    background: linear-gradient(135deg, #39ca7f, #20a75f);
+}
+
+.marker-3 {
+    top: 115px;
+    right: 18%;
+
+    background: linear-gradient(135deg, #6485ff, #3d5bff);
+}
+
+.map-location {
+    position: absolute;
+
+    bottom: 35px;
+    right: 110px;
+
+    width: 50px;
+    height: 50px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 50%;
+
+    color: white;
+
+    background: #734cff;
+
+    z-index: 5;
+
+    box-shadow: 0 0 0 12px rgba(115,76,255,0.13);
+}
+
+.location-pulse {
+    position: absolute;
+
+    width: 70px;
+    height: 70px;
+
+    border: 1px solid rgba(157, 132, 255, 0.5);
+    border-radius: 50%;
+
+    animation: pulseLocation 2s infinite;
+}
+
+@keyframes pulseLocation {
+
+    0% {
+        transform: scale(0.7);
+        opacity: 1;
+    }
+
+    100% {
+        transform: scale(1.4);
+        opacity: 0;
+    }
+}
+
+
+/* CITY STATS */
+
+.city-stats {
+    position: relative;
+
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+
+    gap: 10px;
+
+    margin-top: 20px;
+}
+
+.city-stat {
+    padding: 14px;
+
+    border-radius: 16px;
+
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.05);
+}
+
+.stat-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.stat-icon {
+    width: 34px;
+    height: 34px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 10px;
+}
+
+.stat-number {
+    color: white;
+    font-size: 21px;
+    font-weight: 800;
+}
+
+.city-stat > span {
+    display: block;
+    margin-top: 8px;
+
+    font-size: 10px;
+    color: #a6acc7;
+}
+
+
+/* COLORS */
+
+.purple-bg {
+    color: #b09bff;
+    background: rgba(117, 77, 255, 0.16);
+}
+
+.orange-bg {
+    color: #ffae68;
+    background: rgba(255, 129, 46, 0.15);
+}
+
+.green-bg {
+    color: #75efb0;
+    background: rgba(44, 201, 111, 0.14);
+}
+
+
+/* FLOATING CARDS */
+
+.floating-card {
+    position: absolute;
+
+    display: flex;
+    align-items: center;
+    gap: 12px;
+
+    padding: 14px;
+
+    border-radius: 18px;
+
+    background: rgba(255,255,255,0.92);
+    backdrop-filter: blur(15px);
+
+    box-shadow:
+        0 20px 50px rgba(31, 30, 80, 0.18);
+
+    z-index: 5;
+
+    animation: floatCard 5s ease-in-out infinite;
+}
+
+.floating-card strong {
+    display: block;
+
+    font-size: 12px;
+    color: #20273b;
+}
+
+.floating-card span {
+    display: block;
+
+    margin-top: 3px;
+
+    font-size: 10px;
+    color: #8a91a2;
+}
+
+.floating-icon {
+    width: 40px;
+    height: 40px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 13px;
+}
+
+.floating-icon.orange {
+    color: #ff713d;
+    background: #fff0e9;
+}
+
+.floating-icon.green {
+    color: #2db76b;
+    background: #e8fff2;
+}
+
+.pothole-card {
+    top: 0;
+    left: -15px;
+}
+
+.garbage-card {
+    bottom: 40px;
+    right: -20px;
+
+    animation-delay: 1s;
+}
+
+.status-dot {
+    width: 8px;
+    height: 8px;
+
+    background: #ff693d;
+
+    border-radius: 50%;
+}
+
+.success-check {
+    color: #32c977;
+    margin-left: 5px;
+}
+
+@keyframes floatCard {
+
+    0%, 100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-12px);
+    }
+
+}
+
+
+/* DECORATIONS */
+
+.orbit {
+    position: absolute;
+
+    border: 1px solid rgba(113, 78, 255, 0.12);
+    border-radius: 50%;
+
+    pointer-events: none;
+}
+
+.orbit-one {
+    width: 600px;
+    height: 600px;
+
+    right: -100px;
+    top: -10px;
+}
+
+.orbit-two {
+    width: 430px;
+    height: 430px;
+
+    right: 20px;
+    top: 80px;
+}
+
+.hero-orb {
+    position: absolute;
+
+    width: 90px;
+    height: 90px;
+
+    border-radius: 50%;
+
+    filter: blur(5px);
+
+    opacity: 0.6;
+}
+
+.orb-purple {
+    top: 130px;
+    right: -20px;
+
+    background: #7652ff;
+}
+
+.orb-blue {
+    bottom: 60px;
+    left: 20px;
+
+    background: #4285ff;
+}
+
+
+/* QUICK STATS */
+
+.quick-stats-section {
+    position: relative;
+    z-index: 5;
+
+    margin-top: -40px;
+}
+
+.quick-stats {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr auto 1fr;
+
+    align-items: center;
+
+    padding: 25px 35px;
+
+    background: rgba(255,255,255,0.9);
+    backdrop-filter: blur(20px);
+
+    border: 1px solid rgba(120, 105, 200, 0.1);
+    border-radius: 24px;
+
+    box-shadow: 0 18px 50px rgba(40, 35, 90, 0.1);
+}
+
+.quick-stat {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.quick-stat-icon {
+    width: 48px;
+    height: 48px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 15px;
+}
+
+.quick-stat strong {
+    display: block;
+
+    font-size: 14px;
+    color: #20263a;
+}
+
+.quick-stat span {
+    display: block;
+
+    margin-top: 4px;
+
+    color: #858c9d;
+    font-size: 12px;
+}
+
+.quick-divider {
+    width: 1px;
+    height: 45px;
+
+    background: #e6e8ef;
+}
+
+
+/* HOW SECTION */
+
+.how-section {
+    padding: 130px 0 100px;
+
+    background:
+        linear-gradient(180deg, #ffffff, #f8f9ff);
+}
+
+.section-heading {
+    max-width: 680px;
+    margin: auto;
+}
+
+.section-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+
+    padding: 8px 14px;
+
+    border-radius: 50px;
+
+    background: #f0edff;
+    color: #6745ee;
+
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 1px;
+}
+
+.section-heading h2 {
+    margin: 20px 0 15px;
+
+    font-size: clamp(2.2rem, 4vw, 3.5rem);
+    font-weight: 800;
+    letter-spacing: -1.5px;
+}
+
+.section-heading h2 span {
+    color: #7049ff;
+}
+
+.section-heading p {
+    color: #7a8294;
+    line-height: 1.8;
+}
+
+.process-row {
+    margin-top: 65px;
+}
+
+
+/* PROCESS CARDS */
+
+.process-card {
+    position: relative;
+
+    height: 100%;
+
+    padding: 38px 32px;
+
+    border-radius: 25px;
+
+    background: white;
+
+    border: 1px solid #eaebf3;
+
+    transition: 0.35s ease;
+
+    overflow: hidden;
+}
+
+.process-card:hover {
+    transform: translateY(-10px);
+
+    box-shadow:
+        0 25px 60px rgba(37, 31, 90, 0.12);
+}
+
+.featured-card {
+    border-color: rgba(108, 75, 255, 0.25);
+
+    box-shadow:
+        0 18px 50px rgba(95, 65, 255, 0.1);
+}
+
+.featured-badge {
+    position: absolute;
+
+    top: 20px;
+    right: 20px;
+
+    padding: 6px 10px;
+
+    font-size: 8px;
+    letter-spacing: 1px;
+    font-weight: 800;
+
+    color: #7250ff;
+
+    background: #f0edff;
+
+    border-radius: 20px;
+}
+
+.step-number {
+    position: absolute;
+
+    top: 15px;
+    left: 25px;
+
+    font-size: 70px;
+    font-weight: 800;
+
+    color: #f3f3f8;
+
+    line-height: 1;
+}
+
+.process-icon {
+    position: relative;
+
+    width: 65px;
+    height: 65px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 20px;
+
+    font-size: 25px;
+
+    margin-bottom: 28px;
+}
+
+.icon-purple {
+    color: #754eff;
+    background: #f0ecff;
+}
+
+.icon-blue {
+    color: #3472ff;
+    background: #eaf1ff;
+}
+
+.icon-green {
+    color: #2fc679;
+    background: #e9fff3;
+}
+
+.process-card h3 {
+    position: relative;
+
+    font-size: 22px;
+    font-weight: 800;
+
+    margin-bottom: 15px;
+}
+
+.process-card p {
+    position: relative;
+
+    color: #7c8395;
+    line-height: 1.75;
+}
+
+.process-line {
+    height: 1px;
+
+    background: #eceef4;
+
+    margin: 25px 0 18px;
+}
+
+.process-link {
+    color: #6847ee;
+
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.process-link i {
+    margin-left: 6px;
+}
+
+
+/* CTA */
+
+.cta-section {
+    padding: 40px 0 100px;
+
+    background: #f8f9ff;
+}
+
+.cta-box {
+    position: relative;
+
+    padding: 60px;
+
+    overflow: hidden;
+
+    border-radius: 32px;
+
+    color: white;
+
+    background:
+        linear-gradient(
+            135deg,
+            #17182f,
+            #292154 55%,
+            #4227a2
+        );
+
+    box-shadow:
+        0 30px 70px rgba(39, 29, 95, 0.25);
+}
+
+.cta-glow {
+    position: absolute;
+
+    border-radius: 50%;
+
+    filter: blur(40px);
+}
+
+.cta-glow-one {
+    width: 300px;
+    height: 300px;
+
+    top: -150px;
+    right: 10%;
+
+    background: rgba(113, 79, 255, 0.5);
+}
+
+.cta-glow-two {
+    width: 200px;
+    height: 200px;
+
+    bottom: -100px;
+    left: 10%;
+
+    background: rgba(39, 111, 255, 0.3);
+}
+
+.cta-tag {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 1.5px;
+
+    color: #bfb3ff;
+
+    margin-bottom: 15px;
+}
+
+.cta-tag span {
+    width: 8px;
+    height: 8px;
+
+    background: #8d75ff;
+
+    border-radius: 50%;
+}
+
+.cta-box h2 {
+    font-size: clamp(2.2rem, 4vw, 3.5rem);
+    font-weight: 800;
+
+    letter-spacing: -1.5px;
+}
+
+.cta-box h2 span {
+    color: #a98fff;
+}
+
+.cta-box p {
+    max-width: 650px;
+
+    color: #b8b8d0;
+
+    line-height: 1.8;
+}
+
+.cta-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 30px;
+
+    padding: 14px 16px 14px 23px;
+
+    border-radius: 18px;
+
+    color: #26203f;
+    background: white;
+
+    text-decoration: none;
+
+    font-weight: 800;
+
+    transition: 0.3s;
+}
+
+.cta-button:hover {
+    color: #5e3ee8;
+
+    transform: translateY(-4px);
+}
+
+.cta-button span {
+    display: flex;
+    flex-direction: column;
+
+    text-align: left;
+}
+
+.cta-button small {
+    color: #8b8b9c;
+    font-size: 10px;
+
+    margin-top: 3px;
+}
+
+.cta-button > i {
+    width: 42px;
+    height: 42px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 13px;
+
+    color: white;
+
+    background: linear-gradient(135deg, #6d45ff, #8a67ff);
+}
+
+
+/* RESPONSIVE */
+
+@media (max-width: 991px) {
+
+    .hero-section {
+        padding-top: 50px;
+    }
+
+    .hero-content {
+        text-align: center;
+    }
+
+    .hero-badge {
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .hero-description {
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .hero-actions {
+        justify-content: center;
+    }
+
+    .hero-trust {
+        justify-content: center;
+    }
+
+    .hero-visual {
+        margin-top: 50px;
+    }
+
+    .city-scene {
+        max-width: 600px;
+        margin: auto;
+    }
+
+    .city-card {
+        right: 50%;
+        transform: translateX(50%) rotate(-2deg);
+    }
+
+    .quick-stats {
+        grid-template-columns: 1fr;
+        gap: 25px;
+    }
+
+    .quick-divider {
+        display: none;
+    }
+
+    .quick-stat {
+        justify-content: center;
+    }
+
+    .cta-box {
+        text-align: center;
+    }
+
+    .cta-box .text-lg-end {
+        text-align: center !important;
+        margin-top: 25px;
+    }
+
+}
+
+
+@media (max-width: 576px) {
+
+    .hero-section {
+        min-height: auto;
+        padding-bottom: 60px;
+    }
+
+    .min-vh-75 {
+        min-height: auto;
+    }
+
+    .hero-title {
+        font-size: 3.2rem;
+        letter-spacing: -2px;
+    }
+
+    .hero-trust {
+        flex-direction: column;
+    }
+
+    .trust-line {
+        display: none;
+    }
+
+    .city-scene {
+        min-height: 500px;
+    }
+
+    .city-card {
+        width: 100%;
+        padding: 15px;
+    }
+
+    .pothole-card {
+        left: 0;
+    }
+
+    .garbage-card {
+        right: 0;
+    }
+
+    .city-stats {
+        gap: 6px;
+    }
+
+    .city-stat {
+        padding: 10px;
+    }
+
+    .cta-box {
+        padding: 40px 25px;
+    }
+
+    .quick-stats {
+        padding: 25px 20px;
+    }
+
+}
+
 </style>
+
 {% endblock %}

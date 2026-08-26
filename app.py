@@ -5,7 +5,7 @@ import json
 import base64
 from datetime import datetime
 from math import radians, cos, sin, asin, sqrt
-
+import requests
 from flask import (Flask, render_template, request, redirect, url_for,
                    session, jsonify, g, flash)
 import click
@@ -128,57 +128,100 @@ def haversine(lon1, lat1, lon2, lat2):
 def index():
     return render_template('index.html')
 
+# ==============================
+# SMS / OTP CONFIGURATION
+# ==============================
+
 @app.route('/register', methods=['GET', 'POST'])
 def register():
+
     if request.method == 'POST':
-        mobile_number = request.form['mobile_number']
+
+        mobile_number = request.form['mobile_number'].strip()
+
+        # Basic validation
+        if not mobile_number.isdigit() or len(mobile_number) != 10:
+            flash('Please enter a valid 10-digit mobile number.', 'error')
+            return redirect(url_for('register'))
+
         db = get_db()
-        if db.execute('SELECT id FROM users WHERE mobile_number = ?', (mobile_number,)).fetchone():
-            flash('This mobile number is already registered.', 'error')
+
+        # Check if already registered
+        existing_user = db.execute(
+            'SELECT * FROM users WHERE mobile_number = ?',
+            (mobile_number,)
+        ).fetchone()
+
+        if existing_user:
+            flash('This mobile number is already registered. Please login.', 'error')
             return redirect(url_for('login'))
-        otp = str(random.randint(1000, 9999))
-        print(f"Generated OTP for {mobile_number}: {otp}") 
-        db.execute('INSERT INTO users (mobile_number, otp, otp_generated_at) VALUES (?, ?, ?)', (mobile_number, otp, datetime.now()))
+
+        # Create user
+        db.execute(
+            '''
+            INSERT INTO users (mobile_number)
+            VALUES (?)
+            ''',
+            (mobile_number,)
+        )
+
         db.commit()
-        session['mobile_for_verification'] = mobile_number
-        return redirect(url_for('verify_otp'))
+
+        # Log user in directly
+        user = db.execute(
+            'SELECT * FROM users WHERE mobile_number = ?',
+            (mobile_number,)
+        ).fetchone()
+
+        session.clear()
+        session['user_id'] = user['id']
+        session['user_mobile'] = user['mobile_number']
+
+        flash('Registration successful! Welcome to Darpan.', 'success')
+
+        return redirect(url_for('user_dashboard'))
+
     return render_template('register.html')
 
-@app.route('/verify_otp', methods=['GET', 'POST'])
-def verify_otp():
-    if 'mobile_for_verification' not in session:
-        return redirect(url_for('register'))
-    if request.method == 'POST':
-        otp_entered = request.form['otp']
-        mobile_number = session['mobile_for_verification']
-        db = get_db()
-        user = db.execute('SELECT * FROM users WHERE mobile_number = ?', (mobile_number,)).fetchone()
-        if user and user['otp'] == otp_entered:
-            session.clear()
-            session['user_id'] = user['id']
-            session['user_mobile'] = user['mobile_number']
-            return redirect(url_for('user_dashboard'))
-        else:
-            flash('Invalid OTP. Please try again.', 'error')
-    return render_template('verify_otp.html')
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
-    if request.method == 'POST':
-        mobile_number = request.form['mobile_number']
-        db = get_db()
-        user = db.execute('SELECT * FROM users WHERE mobile_number = ?', (mobile_number,)).fetchone()
-        if not user:
-            flash('Mobile number not registered. Please register first.', 'error')
-            return redirect(url_for('register'))
-        otp = str(random.randint(1000, 9999))
-        print(f"Generated OTP for {mobile_number}: {otp}")
-        db.execute('UPDATE users SET otp = ?, otp_generated_at = ? WHERE mobile_number = ?', (otp, datetime.now(), mobile_number))
-        db.commit()
-        session['mobile_for_verification'] = mobile_number
-        return redirect(url_for('verify_otp'))
-    return render_template('login.html')
 
+    if request.method == 'POST':
+
+        mobile_number = request.form['mobile_number'].strip()
+
+        # Basic validation
+        if not mobile_number.isdigit() or len(mobile_number) != 10:
+            flash('Please enter a valid 10-digit mobile number.', 'error')
+            return redirect(url_for('login'))
+
+        db = get_db()
+
+        user = db.execute(
+            'SELECT * FROM users WHERE mobile_number = ?',
+            (mobile_number,)
+        ).fetchone()
+
+        # User not found
+        if not user:
+            flash(
+                'Mobile number not registered. Please register first.',
+                'error'
+            )
+            return redirect(url_for('register'))
+
+        # Login directly
+        session.clear()
+
+        session['user_id'] = user['id']
+        session['user_mobile'] = user['mobile_number']
+
+        flash('Login successful!', 'success')
+
+        return redirect(url_for('user_dashboard'))
+
+    return render_template('login.html')
 @app.route('/logout')
 def logout():
     session.clear()
@@ -235,13 +278,29 @@ def submit_issue():
     cursor.execute("INSERT INTO upvotes (user_id, issue_id) VALUES (?, ?)", (session['user_id'], new_issue_id))
     db.commit()
     return jsonify({'success': True, 'message': 'Issue reported successfully!'})
+from datetime import datetime
+
 
 @app.route('/issue/<int:issue_id>')
 def issue_detail(issue_id):
-    if 'user_id' not in session: return redirect(url_for('login'))
     db = get_db()
-    issue = db.execute('SELECT * FROM issues WHERE id = ?', (issue_id,)).fetchone()
-    if not issue: return "Issue not found", 404
+
+    issue_row = db.execute(
+        'SELECT * FROM issues WHERE id = ?',
+        (issue_id,)
+    ).fetchone()
+
+    if issue_row is None:
+        return "Issue not found", 404
+
+    issue = dict(issue_row)
+
+    if isinstance(issue.get('created_at'), str):
+        issue['created_at'] = datetime.strptime(
+            issue['created_at'],
+            '%Y-%m-%d %H:%M:%S'
+        )
+
     return render_template('issue_detail.html', issue=issue)
 
 @app.route('/upvote/<int:issue_id>', methods=['POST'])
@@ -304,6 +363,10 @@ def update_status(issue_id):
 def authority_logout():
     session.pop('authority_id', None); session.pop('authority_city', None)
     return redirect(url_for('authority_login'))
+
+
+
+
 
 if __name__ == '__main__':
     app.run(debug=True)
