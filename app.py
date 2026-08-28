@@ -28,28 +28,59 @@ os.makedirs(app.config['UPLOAD_FOLDER_VOICE'], exist_ok=True)
 # Initialize the advanced zero-shot image classification pipeline.
 # This model understands concepts, not just pre-defined classes.
 # The first time you run the app, this will download the model files (approx. 1.7GB).
-try:
-    image_classifier = pipeline("zero-shot-image-classification", model="openai/clip-vit-large-patch14")
-    print("AI Model (CLIP) loaded successfully.")
-except Exception as e:
-    print(f"Could not load AI model: {e}")
-    image_classifier = None
+# --- AI Model Setup (Lazy Loading) ---
+
+image_classifier = None
+model_load_attempted = False
+
+
+def get_image_classifier():
+    global image_classifier, model_load_attempted
+
+    # If already loaded, return it
+    if image_classifier is not None:
+        return image_classifier
+
+    # Avoid repeatedly trying if loading failed
+    if model_load_attempted:
+        return None
+
+    model_load_attempted = True
+
+    try:
+        print("Loading AI model...")
+
+        image_classifier = pipeline("zero-shot-image-classification",model="openai/clip-vit-base-patch32")
+
+        print("AI Model (CLIP) loaded successfully.")
+
+        return image_classifier
+
+    except Exception as e:
+        print(f"Could not load AI model: {e}")
+        return None
 
 def classify_image(image_path):
-    """
-    Classifies an image using the advanced CLIP model to determine
-    if it contains a pothole or garbage.
-    """
-    if not image_classifier:
-        # Fallback in case the model fails to load
+
+    # Load the AI model only when an image is actually submitted
+    classifier = get_image_classifier()
+
+    if classifier is None:
         return "Other"
-        
+
     try:
-        # These are the concepts we want the model to check for.
-        candidate_labels = ["a pothole in the road", "a pile of garbage", "a normal street", "a car", "a person"]
-        
-        # The model will score the image against each label.
-        predictions = image_classifier(image_path, candidate_labels=candidate_labels)
+        candidate_labels = [
+            "a pothole in the road",
+            "a pile of garbage",
+            "a normal street",
+            "a car",
+            "a person"
+        ]
+
+        predictions = classifier(
+            image_path,
+            candidate_labels=candidate_labels
+        )
         
         # Get the top prediction
         top_prediction = predictions[0]
